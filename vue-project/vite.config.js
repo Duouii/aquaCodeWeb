@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-//elementPLUS
+// elementPLUS
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -16,8 +16,8 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      //1.配置elementPlus采用sass样式配色系统
-      resolvers: [ElementPlusResolver({ importStyle: "sass" })],
+      // 1.配置elementPlus采用sass样式配色系统
+      resolvers: [ElementPlusResolver({ importStyle: 'sass' })],
     }),
   ],
   resolve: {
@@ -30,7 +30,9 @@ export default defineConfig({
       scss: {
         additionalData: `
         @use "@/styles/element/index.scss";
-        @use "@/styles/config.scss" as *;
+        @use "@/styles/element/element.scss";
+        @use "@/styles/config.scss" as * ;
+        @use "@/styles/common.scss" as * ;
       `
       }
     }
