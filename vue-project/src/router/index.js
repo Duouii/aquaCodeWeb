@@ -7,6 +7,7 @@ import Individual from '@/views/Individual/index.vue'
 import Update from '@/views/Update/index.vue'
 import CourseCenter from '@/views/CourseCenter/index.vue'
 import ExerciseCenter from '@/views/ExerciseCenter/index.vue'
+import Course from '@/views/Course/index.vue'
 
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -33,7 +34,11 @@ const router = createRouter({
       {
         path:'/exercise',
         component:ExerciseCenter
-      }
+      },
+      {
+        path:'/course/:courseId',
+        component:Course
+      },
     ]
     },
     {
