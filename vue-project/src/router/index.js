@@ -5,7 +5,8 @@ import Register from '@/views/Register/index.vue'
 import FindPassword from '@/views/FindPassword/index.vue'
 import Individual from '@/views/Individual/index.vue'
 import Update from '@/views/Update/index.vue'
-
+import CourseCenter from '@/views/CourseCenter/index.vue'
+import ExerciseCenter from '@/views/ExerciseCenter/index.vue'
 
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -25,6 +26,14 @@ const router = createRouter({
         path: '/user/update',
         component: Update
       },
+      {
+        path:'/course',
+        component:CourseCenter
+      },
+      {
+        path:'/exercise',
+        component:ExerciseCenter
+      }
     ]
     },
     {

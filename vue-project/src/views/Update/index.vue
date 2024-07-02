@@ -91,9 +91,10 @@ const doUpdatePsw = () =>{
 
 </script>
 <template>
-  <div class="container">
-    <div class="return-btn"><el-button class="return" plain @click="returnPage"><img src="../../assets/icons/Vector 202.png" alt=""></el-button></div>
-    <div class="left-nav">
+  <div class="background">
+    <div class="container">
+      <div class="return-btn"><el-button class="return" plain @click="returnPage"><img src="../../assets/icons/Vector 202.png" alt=""></el-button></div>
+      <div class="left-nav">
       <div class="option option-info" :class="{active:activeTab === 'info'}" @click="selectTab('info')">
         <div class="icon-info fl" :class="{active:activeTab === 'info'}"></div>
         <span class="info fl">个人信息</span>
@@ -102,54 +103,55 @@ const doUpdatePsw = () =>{
         <div class="icon-psw fl" :class="{active:activeTab === 'psw'}"></div>
         <div class="psw fl">修改密码</div>
       </div> 
-    </div>
-    <div class="right-Contain">
-      <div class="info-Contain" v-if="activeTab === 'info'">
-        <div class="showUserAvatar">
-          <el-upload
-            action="uploadUrl"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-            >         
-            <img v-if="userInfo.userAvatar" :src="userInfo.userAvatar" class="avatar" />
-            <div v-else class="nameFirst">{{ userInfo.userName?.charAt(0) }}</div>
-          </el-upload>
-        </div>
-        <div class="info-update">
-          <el-form :hide-required-asterisk="true" ref="formRefInfo" :model="infoUpdate" label-position="top" label-width="60px" status-icon>
-            <div class="spot fl"></div>
-            <el-form-item prop="userName" label="昵称" >
-              <el-input v-model="infoUpdate.userName" :placeholder="userInfo.userName" maxlength="10"/>
-            </el-form-item>
-            <div class="spot fl"></div>
-            <el-form-item prop="userProfile" label="个性签名" >
-              <el-input class="textarea" type="textarea" :autosize="{minRows: 2, maxRows: 5}" v-model="infoUpdate.userProfile" :placeholder="userInfo.userProfile" maxlength="40"/>
-            </el-form-item>
-            <el-button class="subBtn" @click="doUpdateInfo">确认修改</el-button>
-          </el-form>
-        </div>
       </div>
-      <div class="psw-Contain" v-if="activeTab === 'psw'">
-        <div class="psw-update">
-          <el-form :hide-required-asterisk="true" ref="formRefPsw" :model="pswUpdate" :rules="pswRules" label-position="top" label-width="60px" status-icon>
-            <div class="userOldPassword-update">
-              <el-form-item prop="oldPassword" label="原密码" >
-                <el-input v-model="pswUpdate.oldPassword" placeholder="请输入原本使用的密码" />
+      <div class="right-Contain">
+        <div class="info-Contain" v-if="activeTab === 'info'">
+          <div class="showUserAvatar">
+            <el-upload
+              action="uploadUrl"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              >         
+              <img v-if="userInfo.userAvatar" :src="userInfo.userAvatar" class="avatar" />
+              <div v-else class="nameFirst">{{ userInfo.userName?.charAt(0) }}</div>
+            </el-upload>
+          </div>
+          <div class="info-update">
+            <el-form :hide-required-asterisk="true" ref="formRefInfo" :model="infoUpdate" label-position="top" label-width="60px" status-icon>
+              <div class="spot fl"></div>
+              <el-form-item prop="userName" label="昵称" >
+                <el-input v-model="infoUpdate.userName" :placeholder="userInfo.userName" maxlength="10"/>
               </el-form-item>
-            </div>
-            <div class="userPassword-update">
-              <el-form-item prop="userPassword" label="新密码" >
-                <el-input v-model="pswUpdate.userPassword" placeholder="请输入新密码" />
+              <div class="spot fl"></div>
+              <el-form-item prop="userProfile" label="个性签名" >
+                <el-input class="textarea" type="textarea" :autosize="{minRows: 2, maxRows: 5}" v-model="infoUpdate.userProfile" :placeholder="userInfo.userProfile" maxlength="40"/>
               </el-form-item>
-            </div>
-            <div class="userPasswordAgain-update">
-              <el-form-item prop="userPasswordAgain" label="重复新密码" >
-                <el-input v-model="pswUpdate.userPasswordAgain" placeholder="请输入新密码" />
-              </el-form-item>
-            </div>
-            <el-button class="subBtn" @click="doUpdatePsw">确认修改</el-button>
-          </el-form>
+              <el-button class="subBtn" @click="doUpdateInfo">确认修改</el-button>
+            </el-form>
+          </div>
+        </div>
+        <div class="psw-Contain" v-if="activeTab === 'psw'">
+          <div class="psw-update">
+            <el-form :hide-required-asterisk="true" ref="formRefPsw" :model="pswUpdate" :rules="pswRules" label-position="top" label-width="60px" status-icon>
+              <div class="userOldPassword-update">
+                <el-form-item prop="oldPassword" label="原密码" >
+                  <el-input v-model="pswUpdate.oldPassword" placeholder="请输入原本使用的密码" />
+                </el-form-item>
+              </div>
+              <div class="userPassword-update">
+                <el-form-item prop="userPassword" label="新密码" >
+                  <el-input v-model="pswUpdate.userPassword" placeholder="请输入新密码" />
+                </el-form-item>
+              </div>
+              <div class="userPasswordAgain-update">
+                <el-form-item prop="userPasswordAgain" label="重复新密码" >
+                  <el-input v-model="pswUpdate.userPasswordAgain" placeholder="请输入新密码" />
+                </el-form-item>
+              </div>
+              <el-button class="subBtn" @click="doUpdatePsw">确认修改</el-button>
+            </el-form>
+          </div>
         </div>
       </div>
     </div>
@@ -173,13 +175,22 @@ const doUpdatePsw = () =>{
 ::v-deep .el-form-item__error {
   top: 67%;
 }
+.background{
+  position: relative;
+  display: flex;
+  width: 100%;
+  background: url(../../assets/images/Layout.png) no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
 .container{
   display: flex;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  margin-top: 125px;
   width: 981px;
+  margin-top: 125px;
+  border-radius: 4px;
 }
 .return-btn .el-button{
   position: absolute;

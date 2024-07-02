@@ -13,8 +13,5 @@ import LayoutNav from '@/Layout/component/LayoutNav.vue'
   display: flex;
   width: 100%;
   height: 3000px;
-  background: url(../assets/images/Layout.png) no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
 }
 </style>

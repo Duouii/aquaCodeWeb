@@ -8,26 +8,16 @@ const customColors = [
 const studyingCourse = ref([])
 
 const getStudyingCourse = async() => {
-    const res = await getStudyingCourseAPI()
-    studyingCourse.value = res
+  const res = await getStudyingCourseAPI()
+  studyingCourse.value = res
 }
 const getCourseTag = (courseTagsString) => {
-  try {
-    const courseTags = JSON.parse(courseTagsString);
-    return courseTags;
-  } catch (error) {
-    console.error("Error parsing courseTags: ", error);
-    return [];
-  }
+  const courseTags = JSON.parse(courseTagsString);
+  return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-    try{
-        const userProgressPersent = userProgress/courseTotalProgress;
-        return userProgressPersent;
-    }catch (error) {
-        console.error("Error parsing courseTags: ", error);
-        return "";
-  }
+  const userProgressPersent = userProgress/courseTotalProgress;
+  return userProgressPersent;
 }
 
 onMounted(()=>getStudyingCourse())

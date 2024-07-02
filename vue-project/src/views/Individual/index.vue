@@ -2,19 +2,28 @@
 import IndividualHeader from './components/IndividualHeader.vue'
 import IndividualLesson from './components/IndividualLesson.vue'
 import IndividualHomeExercise from './components/IndividualExercise.vue'
-
 </script>
 <template>
-  <div class="container">
-    <IndividualHeader />
-    <div class="flex">
-      <div class="l"><IndividualLesson /></div>
-      <div class="r"><IndividualHomeExercise /></div>
+  <div class="background">
+    <div class="container">
+      <IndividualHeader />
+      <div class="flex">
+        <div class="l"><IndividualLesson /></div>
+        <div class="r"><IndividualHomeExercise /></div>
+      </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.background{
+  position: relative;
+  display: flex;
+  width: 100%;
+  background: url(../../assets/images/Layout.png) no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
 .container {
   position: relative;
   left: 50%;
