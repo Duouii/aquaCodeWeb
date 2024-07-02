@@ -5,8 +5,8 @@ import { getUserInfoAPI } from '@/apis/user';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 const userStore = useUserStore()
+const userInfo = userStore.userInfo
 const router = useRouter()
-const userInfo = ref({})
 
 async function getUserInfo() {
   const res = await getUserInfoAPI();
@@ -122,10 +122,11 @@ nav{
       width: 100%;
       height: 100%;
       border-radius: 40px;
+      line-height: 40px;
       text-align: center;
       background-color: #deeafa;
       color: $blueColor;
-      font-size: 30px;
+      font-size: 25px;
     }
   }
   .search{

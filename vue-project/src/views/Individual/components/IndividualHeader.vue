@@ -2,9 +2,10 @@
 import { getUserInfoAPI } from '@/apis/user';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-const router = useRouter();
-const userInfo = ref({})
-
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
+const userInfo = userStore.userInfo
+const router = useRouter()
 async function getUserInfo() {
   const res = await getUserInfoAPI();
   userInfo.value = res;
@@ -61,7 +62,6 @@ onMounted(() => getUserInfo());
     width: 75px;
     height: 75px;
     border-radius: 75px;
-    background-color: #fff;
     .nameFirst{
       width: 100%;
       height: 100%;

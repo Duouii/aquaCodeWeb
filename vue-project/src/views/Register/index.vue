@@ -134,8 +134,8 @@ Header{
   background-color: #FFFFFF;
   h1{
    margin-top: 30px;
-   margin-left: 47px;
-   width: 56px;
+   margin-left: 58px;
+   width: 58px;
    height: 40px;
    font-weight: bold;
    border-bottom: $titleColor solid 2px;
@@ -144,7 +144,7 @@ Header{
   h3{
    position: absolute;
    top: 50px;
-   left: 115px;
+   left: 120px;
    font-size: 14px;
    color: #7D7F81;
   }

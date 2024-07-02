@@ -107,7 +107,8 @@ onMounted(()=>getStudyingCourse())
       border-radius: 4px;
       margin-bottom: 16px;
       margin-right: 24px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
       img{
         width: 254px;
         height: 197px;

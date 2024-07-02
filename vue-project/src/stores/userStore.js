@@ -1,12 +1,9 @@
 //管理用户数据相关
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { loginAPI } from '@/apis/user'
+import { loginAPI, registerAPI, putUserInfoAPI } from '@/apis/user'
 import { useRouter } from 'vue-router';
-import { registerAPI } from '@/apis/user';
-import { putUserInfoAPI } from '@/apis/user';
-import { putUserPswAPI } from '@/apis/user';
-import {getUserInfoAPI} from '@/apis/user'
+import { putUserPswAPI, getUserInfoAPI, putUserAvatarAPI } from '@/apis/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 import { ElMessage } from 'element-plus'
@@ -63,7 +60,7 @@ export const useUserStore = defineStore('user', () => {
         getRegister,
         putUserInfo,
         clearUserInfo,
-        putUserPsw
+        putUserPsw,
     }
 }, {
     persist: true,

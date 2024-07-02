@@ -4,6 +4,7 @@ import Login from '@/views/Login/index.vue'
 import Register from '@/views/Register/index.vue'
 import FindPassword from '@/views/FindPassword/index.vue'
 import Individual from '@/views/Individual/index.vue'
+import Update from '@/views/Update/index.vue'
 
 
 import nProgress from 'nprogress'
@@ -19,7 +20,12 @@ const router = createRouter({
       children: [{
         path: '',
         component: Individual
-      }]
+      },
+      {
+        path: '/user/update',
+        component: Update
+      },
+    ]
     },
     {
       path: '/user/login',

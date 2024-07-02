@@ -123,7 +123,7 @@ Header{
   background-color: #FFFFFF;
   h1{
    margin-top: 30px;
-   margin-left: 47px;
+   margin-left: 55px;
    width: 112px;
    height: 40px;
    font-weight: bold;
