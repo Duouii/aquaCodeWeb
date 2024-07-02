@@ -3,6 +3,9 @@ import Layout from '@/Layout/index.vue'
 import Login from '@/views/Login/index.vue'
 import Register from '@/views/Register/index.vue'
 import FindPassword from '@/views/FindPassword/index.vue'
+import Individual from '@/views/Individual/index.vue'
+
+
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { getToken } from '@/utils/auth.js'
@@ -12,7 +15,11 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: Layout
+      component: Layout,
+      children: [{
+        path: '',
+        component: Individual
+      }]
     },
     {
       path: '/user/login',

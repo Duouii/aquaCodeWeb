@@ -1,14 +1,20 @@
 <script setup>
-  import { getCaptchaAPI } from '@/apis/user.js'
-  import { onMounted } from 'vue'
-  onMounted(()=>getCaptchaAPI())
+import LayoutNav from '@/Layout/component/LayoutNav.vue'
 </script>
 <template>
-     <el-button type="primary">取消</el-button>
-    <h1>对</h1>
+  <div class="contanier">
+    <LayoutNav></LayoutNav>
+    <RouterView />
+  </div>
 </template>
 <style lang="scss" scoped>
-h1 {
-  color: $titleColor;
+.contanier{
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 3000px;
+  background: url(../assets/images/Layout.png) no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 </style>

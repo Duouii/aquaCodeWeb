@@ -14,3 +14,7 @@
     background-color: #5297FF;
     border-radius: 8px;
 }
+ 
+::v-deep .el-tooltip__trigger:first-child:focus-visible {
+    outline: unset;
+} 

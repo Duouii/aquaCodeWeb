@@ -40,7 +40,7 @@ const doLogin = () => {
   const data = form.value
   formRef.value.validate(async (valid) => {
     if (valid) {
-      await userStore.getUserInfo(data)
+      await userStore.login(data)
     }
   })
 }

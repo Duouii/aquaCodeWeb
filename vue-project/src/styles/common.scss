@@ -6,7 +6,6 @@
 html {
     height: 100%;
     font-size: 14px;
-    // font-size: 62.5%
 }
 
 body {
@@ -55,26 +54,12 @@ ul {
 .fr {
     float: right;
 }
-// input[type=text],
-// input[type=search],
-// input[type=password],
-// input[type=checkbox] {
-//     padding: 0;
-//     outline: none;
-//     border: none;
-//     -webkit-appearance: none;
-// }
+input[type=text],
+input[type=search],
+input[type=password],
+input[type=checkbox] {
+    padding: 0;
+    outline: none;
+    border: none;
+}
 
-// input[type=text]::-moz-placeholder,
-// input[type=search]::-moz-placeholder,
-// input[type=password]::-moz-placeholder,
-// input[type=checkbox]::-moz-placeholder {
-//     color: #7D7F81;
-// }
-
-// input[type=text]::placeholder,
-// input[type=search]::placeholder,
-// input[type=password]::placeholder,
-// input[type=checkbox]::placeholder {
-//     color: #7D7F81;
-// }
