@@ -9,7 +9,7 @@ import CourseCenter from '@/views/CourseCenter/index.vue'
 import ExerciseCenter from '@/views/ExerciseCenter/index.vue'
 import Course from '@/views/Course/index.vue'
 import DayCardStudy from '@/views/DayCardStudy/index.vue'
-import DayCardExercise from '@/views/DayCardExercise/index.vue'
+// import DayCardExercise from '@/views/DayCardExercise/index.vue'
 
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
