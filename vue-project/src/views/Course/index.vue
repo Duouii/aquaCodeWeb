@@ -1,5 +1,6 @@
 <script setup>
 import { ref,onMounted } from 'vue'
+import { toScore } from '@/components/score.js'
 import {getCourseCardContainAPI,getCourseCardAPI} from '@/apis/lesson.js';
 import {useRoute} from 'vue-router'
 const route = useRoute()
@@ -25,6 +26,7 @@ const getuserProgress = (courseTotalProgress,userProgress)=>{
   return userProgressPersent;
 }
 let cardListLesson=[];
+let cardListLessonLock=[];
 let cardListPractice=[];
 
 async function getCourseCardContain(courseCardValue) {
@@ -33,16 +35,14 @@ async function getCourseCardContain(courseCardValue) {
     courseCardContain.value = res;
     courseCardContain.value.cardList.forEach(item=>{
       if(item.cardType === 'lesson'){
-        cardListLesson.push(item);
-      }else if(item.cardType === 'practice'){
-        let score = 0;
-        if(item.difficulty === 'easy'){
-            score = 1;
-        }else if(item.difficulty === 'normal'){
-            score = 2;
-        }else if(item.difficulty === 'hard'){
-            score = 3;
+        if(item.status == 1){
+          cardListLessonLock.push(item)
+        } else {
+          cardListLesson.push(item);
         }
+      }
+      else if(item.cardType === 'practice'){
+        const score = toScore(item.difficulty)
         cardListPractice.push({ ...item, score });
       }
     });
@@ -84,6 +84,11 @@ onMounted(async () => {
                   <div class="point"></div>
                   <div class="dayList">{{item.cardTitle}}</div>
                 </RouterLink>
+              </li>
+              <li v-for="item in cardListLessonLock" :key="item.cardId">
+                <div class="point point-lock"></div>
+                <div class="dayList dayList-lock">{{ item.cardTitle }}</div>
+                <div class="icon-lock"></div>
               </li>
             </ul>
           </li>
@@ -226,6 +231,22 @@ h4{
       .dayList:hover{
         color: #FFFFFF;
         background-color: $blueColor;
+      }
+      .point-lock {
+        background-color: #D9D9D9 !important;
+      }
+      .dayList-lock {
+        color: #7D7F81 !important;
+        background-color: #D9D9D9 !important;
+      }
+      .icon-lock{
+        position: absolute;
+        left: 833px;
+        width: 21px;
+        height: 21px;
+        margin-top: 18px;
+        background: url(../../assets/icons/icon-lock.png) no-repeat;
+        background-size: 21px 21px;
       }
     }
   }

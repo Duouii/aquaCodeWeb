@@ -1,19 +1,13 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getAcceptQuestionAPI } from '@/apis/user'
+import { toScore } from '@/components/score.js'
 
 const acceptQuestion = ref([])
 const getAcceptQuestion = async() => {
   const res = await getAcceptQuestionAPI()
   acceptQuestion.value = res.map(item => {
-    let score = ref(0);
-    if (item.questionDifficulty === 'easy') {
-      score = 1;
-    } else if (item.questionDifficulty === 'normal') {
-      score = 2;
-    } else if (item.questionDifficulty === 'hard') {
-      score = 3;
-    }
+    const score = toScore(item.questionDifficulty)
     return { ...item, score };
   });
 };
