@@ -18,3 +18,18 @@
 ::v-deep .el-tooltip__trigger:first-child:focus-visible {
     outline: unset;
 } 
+
+::v-deep .el-rate .el-rate__icon {
+    margin-right: 0px
+}
+
+::v-deep .el-rate {
+    align-items: baseline;
+    --el-rate-disabled-void-color: #D9D9D9;
+}
+
+::v-deep .el-rate .is-disabled {
+    width: 18px;
+    height: 18px;
+    ;
+}

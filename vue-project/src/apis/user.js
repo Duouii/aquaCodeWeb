@@ -57,7 +57,7 @@ export const putUserPswAPI = ({ oldPassword,userPassword }) => {
 }
 
 // 用户正在学习的课程
-export const getUserStudyingAPI = () => {
+export const getStudyingCourseAPI = () => {
     return httpInstance({
         url: '/user/studyingCourseInfo'
     })
