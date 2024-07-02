@@ -63,6 +63,13 @@ export const getStudyingCourseAPI = () => {
   })
 }
 
+// 用户通过的题目
+export const getAcceptQuestionAPI = () => {
+  return httpInstance({
+    url: '/user/recentAcceptedQuestions'
+  })
+}
+
 // 上传头像
 export const putUserAvatarAPI =(formData)=> {
   return httpInstance({

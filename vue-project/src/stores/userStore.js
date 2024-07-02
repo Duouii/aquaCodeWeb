@@ -25,6 +25,7 @@ export const useUserStore = defineStore('user', () => {
           setToken(userInfo.value.token)
           ElMessage({ type: 'success', message: '登录成功' });
           router.push({ path: '/' })
+          await getUserInfoAPI()
         }
     }
     const getUserInfo = async() => {

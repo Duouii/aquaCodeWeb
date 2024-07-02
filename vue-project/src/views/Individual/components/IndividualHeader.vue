@@ -33,15 +33,15 @@ onMounted(() => getUserInfo());
       <ul class="fr">
         <li class="fl">
           <span>已学课程</span>
-          <h3>12</h3>
+          <h3>{{ userInfo.value.userStudiedCourses}}</h3>
         </li>
         <li class="fl">
           <span>已刷题</span>
-          <h3>257</h3>
+          <h3>{{ userInfo.value.userAcceptedQuestions }}</h3>
         </li>
         <li class="fl">
           <span>学习时长</span>
-          <h3>385</h3>
+          <h3>{{ userInfo.value.userStudyTime }}</h3>
         </li>
       </ul>
     </div>

@@ -1,8 +1,23 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import { getAcceptQuestionAPI } from '@/apis/user'
 
-const score = ref(2)
-
+const acceptQuestion = ref([])
+const getAcceptQuestion = async() => {
+  const res = await getAcceptQuestionAPI()
+  acceptQuestion.value = res.map(item => {
+    let score = ref(0);
+    if (item.questionDifficulty === 'easy') {
+      score = 1;
+    } else if (item.questionDifficulty === 'normal') {
+      score = 2;
+    } else if (item.questionDifficulty === 'hard') {
+      score = 3;
+    }
+    return { ...item, score };
+  });
+};
+onMounted(()=>getAcceptQuestion())
 </script>
 <template>
   <div class="exercise">
@@ -10,75 +25,14 @@ const score = ref(2)
     <div class="icon-exercise"></div>
     <div class="container">
       <ul>
-        <li>
+        <li v-for="item in acceptQuestion" :key="item.questionId">
+          <RouterLink>
             <div class="circle"></div>
-            <h6>1</h6>
-            <span>if语句的应用</span>
-            <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
+            <h6>{{ item.questionId }}</h6>
+            <span>{{ item.questionTitle }}</span>
+            <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
             <div class="status">已通过</div>
-        </li>
-        <li>
-            <div class="circle"></div>
-            <h6>2</h6>
-            <span>if语句的应用</span>
-            <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-            <div class="status">已通过</div>
-        </li>
-        <li>
-            <div class="circle"></div>
-            <h6>3</h6>
-            <span>if语句的应用</span>
-            <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-            <div class="status">已通过</div>
-        </li>
-        <li>
-            <div class="circle"></div>
-            <h6>4</h6>
-            <span>if语句的应用</span>
-            <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-            <div class="status">已通过</div>
-        </li>
-        <li>
-            <div class="circle"></div>
-            <h6>5</h6>
-            <span>if语句的应用</span>
-            <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-            <div class="status">已通过</div>
-        </li>
-        <li>
-          <div class="circle"></div>
-          <h6>6</h6>
-          <span>if语句的应用</span>
-          <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-          <div class="status">已通过</div>
-        </li>
-        <li>
-          <div class="circle"></div>
-          <h6>7</h6>
-          <span>if语句的应用</span>
-          <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-          <div class="status">已通过</div>
-        </li>
-        <li>
-          <div class="circle"></div>
-          <h6>8</h6>
-          <span>if语句的应用</span>
-          <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-          <div class="status">已通过</div>
-        </li>
-        <li>
-          <div class="circle"></div>
-          <h6>9</h6>
-          <span>if语句的应用</span>
-          <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-          <div class="status">已通过</div>
-        </li>
-        <li>
-          <div class="circle"></div>
-          <h6>10</h6>
-          <span>if语句的应用</span>
-          <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-          <div class="status">已通过</div>
+          </RouterLink>
         </li>
       </ul>
     </div>
@@ -123,12 +77,12 @@ const score = ref(2)
       width: 400.5px;
       height: 500px;
     }
-    li{
+    li, a{
       width: 400.5px;
       height: 47px;
       margin-bottom: 4px;
       border-radius: 4px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
