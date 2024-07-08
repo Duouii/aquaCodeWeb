@@ -25,7 +25,7 @@ export const useUserStore = defineStore('user', () => {
           setToken(userInfo.value.token)
           ElMessage({ type: 'success', message: '登录成功' });
           router.push({ path: '/' })
-          await getUserInfoAPI()
+          getUserInfo()
         }
     }
     const getUserInfo = async() => {
@@ -41,11 +41,13 @@ export const useUserStore = defineStore('user', () => {
         const res = await putUserInfoAPI(data)
         userInfo.value = res
         ElMessage({ type: 'success', message: '修改成功' })
+        getUserInfo()
     }
     const putUserPsw = async (data) => {
         const res = await putUserPswAPI(data)
         userInfo.value = res
         ElMessage({ type: 'success', message: '修改成功' })
+        getUserInfo()
     }
     //退出时清除用户信息
     const clearUserInfo = () => {

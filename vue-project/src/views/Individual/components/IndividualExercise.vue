@@ -20,7 +20,7 @@ onMounted(()=>getAcceptQuestion())
     <div class="container">
       <ul>
         <li v-for="item in acceptQuestion" :key="item.questionId">
-          <RouterLink>
+          <RouterLink to="/dayCardExercise">
             <div class="circle"></div>
             <h6>{{ item.questionId }}</h6>
             <span>{{ item.questionTitle }}</span>
@@ -41,7 +41,7 @@ onMounted(()=>getAcceptQuestion())
   position: relative;
   margin-left: 33px;
   width: 463px;
-  height: 659px;
+  height: 659px; //自适应
   border-radius: 4px;
   background-color: #FFFFFF;
   .title{
@@ -76,7 +76,7 @@ onMounted(()=>getAcceptQuestion())
       height: 47px;
       margin-bottom: 4px;
       border-radius: 4px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;

@@ -49,8 +49,8 @@ async function getCourseCardContain(courseCardValue) {
   }
 }
 onMounted(async () => {
-    const courseCardValue = await getCourseCard();
-    await getCourseCardContain(courseCardValue);
+  const courseCardValue = await getCourseCard();
+  await getCourseCardContain(courseCardValue);
 });
 </script>
 
@@ -99,10 +99,10 @@ onMounted(async () => {
           <li class="li">
             <h3>Day1</h3>
             <ul class="dayContain">
-              <li v-for="item in cardListPractice" :key="item.cardId">
-                <RouterLink v-if="item.cardType === 'practice'" to="/dayCardExercise">
+              <li v-for="item in cardListPractice" :key="item.questionId">
+                <RouterLink v-if="item.cardType === 'practice'" :to="`/dayCardExercise/${item.questionId}`">
                   <div class="point"></div>
-                  <h6>{{item.cardId}}</h6>
+                  <h6>{{item.questionId}}</h6>
                   <span>{{item.cardTitle}}</span>
                   <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
                   <div class="status">已通过</div>

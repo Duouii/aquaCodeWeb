@@ -58,7 +58,7 @@ onMounted(()=>getStudyingCourse())
 .lesson{
   position: relative;
   width: 597px;
-  min-height: 800px;
+  min-height: 659px;
   border-radius: 4px;
   background-color: #FFFFFF;
   .title{
@@ -82,7 +82,7 @@ onMounted(()=>getStudyingCourse())
     left: 38px;
     top: 68px;
     width: 524px;
-    height: 668px;
+    min-height: 500px;
     border-radius: 4px;
     background-color: #fff;
     ul{
@@ -102,6 +102,7 @@ onMounted(()=>getStudyingCourse())
       img{
         width: 254px;
         height: 197px;
+        border-radius: 4px;
       }
       h3, .difficulty, .score, .progress{
         margin-left: 16px;

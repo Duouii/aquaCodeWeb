@@ -10,13 +10,8 @@ const userInfo = userStore.userInfo;
 const router = useRouter()
 
 const returnPage = ()=>{
-  if (window.history.length <= 1) {
-    router.push({ path: "/system/storageManagement" });
-    console.log(1);
-    return false;
-  } else {
-    router.go(-1);
-  }
+  router.push('/');
+  userStore.getUserInfo()
 }
 const activeTab = ref('info');
 const selectTab = (tab) => {

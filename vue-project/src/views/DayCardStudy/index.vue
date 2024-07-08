@@ -3,19 +3,10 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { getCoursePageContainAPI } from "@/apis/lesson.js";
-// import { getCoursePageContainAPI, getCourseHistoryAPI } from "@/apis/lesson.js";
-// import { useUserStore } from "@/stores/userStore";
 const router = useRouter();
 const route = useRoute();
-// const userInfo = useUserStore().userInfo;
 const returnPage = () => {
-  if (window.history.length <= 1) {
-    router.push({ path: "/system/storageManagement" });
-    console.log(1);
-    return false;
-  } else {
-    router.go(-1);
-  }
+  router.go(-1);
 };
 //差一个结束的标志
 const index = ref(1);
@@ -62,40 +53,50 @@ onMounted(() => {
 
 <template>
   <div class="contain">
-    <div class="return">
-      <el-button plain @click="returnPage"
-        ><img src="../../assets/icons/Vector 202.png" alt=""
-      /></el-button>
-    </div>
-    <div class="title">{{ coursePage.pageContent }}</div>
-    <el-progress :percentage="50" :show-text="false" />
-    <ul class="left-bottom">
-      <a href=""
-        ><li>
-          <div class="icon-feedback"></div>
-          反馈
-        </li></a
-      >
-      <a href=""
-        ><li>
-          <div class="icon-note"></div>
-          记笔记
-        </li></a
-      >
-    </ul>
-    <div class="continute">
-      <el-button plain size="large" @click="nextPage">继续</el-button>
-    </div>
+    <div class="card-container">
+      <div class="return">
+        <el-button plain @click="returnPage">
+          <img src="../../assets/icons/Vector 202.png" alt=""/>
+        </el-button>
+      </div>
+      <div class="title">{{ coursePage.pageContent }}</div>
+      <el-progress :percentage="50" :show-text="false" />
+      <ul class="left-bottom">
+        <a href=""
+          ><li>
+            <div class="icon-feedback"></div>
+            反馈
+          </li></a
+        >
+        <a href=""
+          ><li>
+            <div class="icon-note"></div>
+            记笔记
+          </li></a
+        >
+      </ul>
+      <div class="continute">
+        <el-button plain size="large" @click="nextPage">继续</el-button>
+      </div>
+    </div> 
   </div>
 </template>
 
 <style lang="scss" scoped>
 .contain {
   position: relative;
-  width: 1440px;
-  height: 820px;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
   background: url(../../assets/images/course.png) no-repeat;
-  background-size: 1440px 820px;
+  background-size: cover;
+  background-attachment: fixed;
+  .card-container{
+    width: 1400px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 .return .el-button {
   position: absolute;
@@ -104,6 +105,7 @@ onMounted(() => {
   width: 46px;
   height: 46px;
   border-radius: 46px;
+  background-color: #fff;
   img {
     width: 5.83px;
     height: 11.67px;
@@ -120,13 +122,13 @@ onMounted(() => {
   border-radius: 46px;
   background-color: #d8e8ff;
   font-size: 26px;
-  color: #0059dd;
+  color: $titleColor;
   text-align: center;
   line-height: 70px;
 }
 .el-progress {
   position: absolute;
-  top: 400px;
+  top: 330px;
   left: -40px;
   width: 244px;
   transform: rotate(90deg);
@@ -139,7 +141,7 @@ onMounted(() => {
 }
 .left-bottom {
   position: absolute;
-  top: 746px;
+  top: 666px;
   left: 80px;
   width: 205px;
   height: 40px;
@@ -166,12 +168,13 @@ onMounted(() => {
 }
 .continute .el-button {
   position: absolute;
-  left: 614px;
-  top: 734px;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 654px;
   width: 212px;
   height: 52px;
   border-radius: 8px;
-  background-color: #267dff;
+  background-color: $blueXColor;
   color: #fff;
 }
 </style>

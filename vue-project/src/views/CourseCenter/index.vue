@@ -126,6 +126,7 @@ onMounted(()=>getCourseCard())
     img {
       width: 254px;
       height: 197px;
+      border-radius: 4px;
     }
     h3 {
       margin-left: 16px;
