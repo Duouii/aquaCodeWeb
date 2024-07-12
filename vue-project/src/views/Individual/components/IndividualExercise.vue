@@ -20,7 +20,7 @@ onMounted(()=>getAcceptQuestion())
     <div class="container">
       <ul>
         <li v-for="item in acceptQuestion" :key="item.questionId">
-          <RouterLink to="/dayCardExercise">
+          <RouterLink :to="`/dayCardExercise/${item.questionId}`">
             <div class="circle"></div>
             <h6>{{ item.questionId }}</h6>
             <span>{{ item.questionTitle }}</span>

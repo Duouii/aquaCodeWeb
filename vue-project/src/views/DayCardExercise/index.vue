@@ -14,17 +14,17 @@ import { javascript } from '@codemirror/lang-javascript';
 import {java} from '@codemirror/lang-java'
 
 const codeVal = ref('');
-const codeValObj = toRefs(codeVal)
 
 const lang = javascript();
 const extensions = [oneDark];
 
-const language = ref('')
+const language = ref('java')
 const selectedLanguage = ref('')
 const selectLanguage = (command) => {
   language.value = command.toString()
   console.log(language.value);
 }
+
 
 const returnPage = ()=>{
   if (window.history.length <= 1) {
@@ -41,13 +41,42 @@ const getQuestion = async () => {
   question.value = res;
 };
 
+const result = ref({})
 const runCode = async() => {
-  const res = await postQuestionAPI(route.params.questionId, language.value, codeValObj.value)
-  const num = parseInt(res)
-  // 先写死
-  await getQuestionResultAPI(126)
+  console.log(route.params.questionId);
+  console.log(language.value);
+  console.log(codeVal.value);
+  const res = await postQuestionAPI(route.params.questionId, language.value, codeVal.value)
+  // const response = await getQuestionResultAPI(res)
+  const response = await getQuestionResultAPI(183)
+  result.value = response
+  turn(result.value)
+  // onsubmit()
+  if(result.value.questionStatus === 2) {
+    // 显示弹框和遮罩
+    showModal.value = true;
+    // 禁止滚动
+    document.body.style.overflow = 'hidden';
+  }
+  
 };
+const turn = (result) => {
+  result.judgeInfoList.forEach(item => {
+    item.memory = (item.memory/1000/1000).toFixed(2);
+    item.time = (item.time/1024/1024).toFixed(2)
+  })
+}
+// 响应式数据
+const showModal = ref(false);
+const responseData = ref('');
 
+// 关闭弹框
+const onCloseModal = () => {
+  showModal.value = false;
+
+  // 恢复滚动
+  document.body.style.overflow = '';
+};
 onMounted(()=>getQuestion())
 </script>
 
@@ -93,18 +122,18 @@ onMounted(()=>getQuestion())
           />
         </div>
         <div class="run">
-        <el-dropdown @command="selectLanguage" v-model="selectedLanguage">
-          <el-button>
-            选择语言<el-icon class="el-icon--right"><arrow-down /></el-icon>
-          </el-button>
-          <template #dropdown>
-            <el-dropdown-menu>
-              <el-dropdown-item command="Python">Python</el-dropdown-item>
-              <el-dropdown-item command="cpp">cpp</el-dropdown-item>
-              <el-dropdown-item command="c">C语言</el-dropdown-item>
-              <el-dropdown-item command="java">java</el-dropdown-item>
-            </el-dropdown-menu>
-          </template>
+          <el-dropdown @command="selectLanguage" v-model="selectedLanguage">
+            <el-button>
+              {{ language  }}<el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="Python">Python</el-dropdown-item>
+                <el-dropdown-item command="cpp">cpp</el-dropdown-item>
+                <el-dropdown-item command="c">C语言</el-dropdown-item>
+                <el-dropdown-item command="java">java</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
           </el-dropdown>
           <el-button plain size="large" @click="runCode">
             <img src="../../assets/icons/icon-run.png" alt="">运行
@@ -121,9 +150,116 @@ onMounted(()=>getQuestion())
       </div>
     </div>
   </div>
+  <!-- 弹框和遮罩 -->
+  <div :class="{ 'modal': true, 'show': showModal }">
+    <div class="window">
+      <h1>SUCCESS</h1>
+      <h2>代码运行成功 :-)</h2>
+      <span>测试点</span>
+      <ul>
+        <li v-for="item in result.judgeInfoList">
+          <h5>{{item.message}}</h5>
+          <h6>{{item.memory}}ms</h6>
+          <h6>{{item.time}}kb</h6>
+        </li>
+      </ul>
+    </div>
+    <button class="closeBtn" @click="onCloseModal">x</button>
+  </div>
+  <div :class="{ 'modal-overlay': true, 'show': showModal }"></div>
 </template>
 
 <style lang="scss" scoped>
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: none;
+  .window {
+    width: 500px;
+    height: 354px;
+    background-color: #EEFFFA;
+    h1 {
+      position: absolute;
+      left: 40px;
+      top: 30px;
+      font-size: 64px;
+      color: #BAFFEA;
+      font-weight: 700;
+    }
+    h2 {
+      position: absolute;
+      left: 40px;
+      top: 102px;
+      font-size: 32px;
+      color: #009F6F;
+    }
+    span {
+      position: absolute;
+      left: 40px;
+      top: 165px;
+      font-size: 16px;
+      color: #45E84C;
+    }
+    ul {
+      position: absolute;
+      left: 40px;
+      top: 192px;
+      height: 85px;
+      display: flex;
+      li {
+        width: 85px;
+        height: 85px;
+        background: #45E84C;
+        margin-right: 14px;
+        h5, h6 {
+          color: #fff;
+          font-size: 13px;
+          text-align: center;
+        }
+        h5 {
+          font-size: 14px;
+          margin-top: 7px;
+          margin-bottom: 15px;
+        }
+      } 
+    }
+    
+  }
+  .closeBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    background-color: transparent;
+    margin-top: 47px;
+    margin-left: 235px;
+    font-size: 25px;
+    line-height: 30px;
+    border: 1px solid #fff;
+    color: #fff;
+  }
+}
+
+.modal.show {
+  display: block;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: none;
+}
+
+.modal-overlay.show {
+  display: block;
+}
 ::v-deep .cm-editor{
   width: 770px;
   height: 568px;
