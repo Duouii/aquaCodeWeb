@@ -2,7 +2,9 @@
 import { onMounted,ref } from 'vue'
 import {getCourseCardAPI} from '@/apis/lesson.js';
 import { useRouter } from 'vue-router';
+import { useRoute } from "vue-router";
 const router = useRouter()
+const route = useRoute();
 
 const courseCard = ref([]);
 const getCourseCard = async () => {
@@ -20,6 +22,7 @@ const getuserProgress = (courseTotalProgress,userProgress)=>{
 const returnPage = ()=>{
   router.push({ path: "/" });
 }
+const courseRouter = route.params.courseId
 onMounted(()=>getCourseCard())
 </script>
 
@@ -63,7 +66,7 @@ onMounted(()=>getCourseCard())
   position: relative;
   display: flex;
   width: 100%;
-  background: url(../../assets/images/Layout.png) no-repeat;
+  background: url(../../assets/images/center.png) no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }

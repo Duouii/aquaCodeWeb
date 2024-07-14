@@ -1,8 +1,11 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, resolveComponent } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
-import { getCoursePageContainAPI } from "@/apis/lesson.js";
+import { getCoursePageContainAPI, getCourseHistoryAPI } from "@/apis/lesson.js";
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
+const userInfo = userStore.userInfo
 const router = useRouter();
 const route = useRoute();
 const returnPage = () => {
@@ -15,39 +18,40 @@ const getCoursePage = async () => {
   const res = await getCoursePageContainAPI(route.params.cardId, index.value)
   coursePage.value = res;
 };
-// const courseHistory = ref(index);
-// const getCourseHistory = async () => {
-//   const res = await getCourseHistoryAPI({
-//     userId: userInfo.userId,
-//     //补上
-//     courseId: 1,
-//     cardId: route.params.cardId,
-//     pageId: index.value,
-//   });
-//   courseHistory.value = res;
-// };
+const courseHistory = ref(index);
+const getCourseHistory = async () => {
+  const res = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
+  courseHistory.value = res;
+};
+const indexMax = 6
+const percent = 244/5
+let widthT = ref((index.value-1)*percent)
+let widthB = ref(244-widthT.value)
 
 const nextPage = async () => {
-  index.value += 1;
-  //拿到用户进入的cardId
-  const res = await getCoursePageContainAPI(
-    route.params.cardId,
-    index.value
-  );
-  coursePage.value = res;
-  // const response = await getCourseHistoryAPI({
-  //   userId: userInfo.userId,
-  //   //补上
-  //   courseId: 1,
-  //   cardId: route.params.cardId,
-  //   pageId: index.value,
-  // });
-  // courseHistory.value = response;
+  if(index.value == indexMax) {
+    alert('当前已是最后一页')
+    return
+  }
+  if(index.value <= indexMax) {
+    index.value += 1;
+    if(widthT.value==(indexMax-1)*percent){
+      widthB = 0
+    }
+    widthT.value+=percent
+    widthB.value-=percent
+    //拿到用户进入的cardId
+    const response = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
+    courseHistory.value = response
+    const res = await getCoursePageContainAPI(route.params.cardId, index.value);
+    coursePage.value = res;
+    // const response = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
+    // courseHistory.value = response
+  }
 };
-
 onMounted(() => {
   getCoursePage();
-  // getCourseHistory();
+  getCourseHistory();
 });
 </script>
 
@@ -59,21 +63,14 @@ onMounted(() => {
           <img src="../../assets/icons/Vector 202.png" alt=""/>
         </el-button>
       </div>
+      <div class="test">
+        <el-progress :percentage="100" :show-text="false" :style="{width: widthT+'px'}" />
+        <el-progress :percentage="100" :show-text="false" :style="{width: widthB+'px'}"/>
+      </div>
       <div class="title">{{ coursePage.pageContent }}</div>
-      <el-progress :percentage="50" :show-text="false" />
       <ul class="left-bottom">
-        <a href=""
-          ><li>
-            <div class="icon-feedback"></div>
-            反馈
-          </li></a
-        >
-        <a href=""
-          ><li>
-            <div class="icon-note"></div>
-            记笔记
-          </li></a
-        >
+        <a href=""><li><div class="icon-feedback"></div>反馈</li></a>
+        <a href=""><li><div class="icon-note"></div>记笔记</li></a>
       </ul>
       <div class="continute">
         <el-button plain size="large" @click="nextPage">继续</el-button>
@@ -126,17 +123,33 @@ onMounted(() => {
   text-align: center;
   line-height: 70px;
 }
-.el-progress {
+.test {
   position: absolute;
-  top: 330px;
+  top: 310px;
   left: -40px;
-  width: 244px;
+  width: 250px;
+  height: 10px;
   transform: rotate(90deg);
+}
+.test .el-progress {
+  float: left;
+  transform: rotate(0deg);
   ::v-deep .el-progress-bar__outer {
     height: 10px !important;
   }
+}
+.test .el-progress:nth-child(1) {
+  // width: 62px;
   ::v-deep .el-progress-bar__inner {
     background-color: #20f9b8;
+  }
+}
+.test .el-progress:nth-child(2) {
+  float: left;
+  // width: 60px;
+  margin-left: 6px;
+  ::v-deep .el-progress-bar__inner {
+    background-color: #C0D9FF;
   }
 }
 .left-bottom {

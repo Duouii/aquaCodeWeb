@@ -28,7 +28,7 @@ export const getCoursePageContainAPI = (cardId, index) => {
   });
 }
 
-export const getCourseHistoryAPI = async ({ userId, courseId, cardId, pageId }) => {
+export const getCourseHistoryAPI = async ( userId, courseId, cardId, pageId ) => {
   return httpInstance({
     url: '/studyHistory/add',
     method: 'POST',

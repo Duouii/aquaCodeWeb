@@ -163,7 +163,7 @@ const score = ref(2)
   position: relative;
   display: flex;
   width: 100%;
-  background: url(../../assets/images/background.png) no-repeat;
+  background: url(../../assets/images/center.png) no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
@@ -252,8 +252,6 @@ const score = ref(2)
 }
 .title {
   width: 1108px;
-  // height: 500px;
-  // background-color: skyblue;
   margin-top: 40px;
   border-radius: 4px;
   li {

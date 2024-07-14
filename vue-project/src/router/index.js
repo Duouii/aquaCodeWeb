@@ -10,6 +10,12 @@ import ExerciseCenter from '@/views/ExerciseCenter/index.vue'
 import Course from '@/views/Course/index.vue'
 import DayCardStudy from '@/views/DayCardStudy/index.vue'
 import DayCardExercise from '@/views/DayCardExercise/index.vue'
+import Manager from '@/views/Manager/index.vue'
+import AddQuestion from '@/views/AddQuestion/index.vue'
+import Content from '@/views/Manager/components/Content.vue'
+import UserManage from '@/views/Manager/components/UserManage.vue'
+import LessonManage from '@/views/Manager/components/LessonManage.vue'
+import ManageContent from '@/views/ManageContent/index.vue'
 
 import nProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -63,6 +69,34 @@ const router = createRouter({
       path: '/dayCardExercise/:questionId',
       component: DayCardExercise
     },
+    {
+      path: '/manage',
+      component: Manager,
+      children: [
+        {
+          path: '',
+          component: Content
+        },
+        {
+          path: '/manage/userManage',
+          component: UserManage
+        },
+        {
+          path: '/manage/lessonManage',
+          component: LessonManage
+        }
+      ]
+    },
+    {
+      path: '/manageContent',
+      component: ManageContent,
+      children: [
+        {
+          path: '/manageContent/addQuestion' ,
+          component: AddQuestion
+        }
+      ]
+    }
   ]
 })
 

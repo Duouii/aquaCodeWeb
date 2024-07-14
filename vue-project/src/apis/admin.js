@@ -12,19 +12,11 @@ export const postBanUserAPI = async(userId) => {
 }
 
 // 管理员添加题目
-export const postAddQuestionAPI = async(questionTitle, questionContent, questionTags, questionDifficulty, questionAnswer, questionJudgeConfig, questionCase) => {
+export const postAddQuestionAPI = async(data) => {
   return httpInstance({
     method: 'post',
-    url: '/question/add',
-    data: {
-      questionTitle, 
-      questionContent, 
-      questionTags, 
-      questionDifficulty, 
-      questionAnswer, 
-      questionJudgeConfig, 
-      questionCase
-    }
+    url: '/admin/question/add',
+    data
   });
 }
 

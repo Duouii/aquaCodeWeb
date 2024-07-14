@@ -38,6 +38,9 @@ const logout = () => {
       })
     })
 }
+const manage = () => {
+  router.push('/manage')
+}
 onMounted(()=>getUserInfo())
 </script>
 
@@ -57,6 +60,7 @@ onMounted(()=>getUserInfo())
         <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item @click="logout">退出账号</el-dropdown-item>
+          <el-dropdown-item v-if="userInfo.userRole === 'admin'" @click="manage">管理系统</el-dropdown-item>
         </el-dropdown-menu>
         </template>
       </el-dropdown>
