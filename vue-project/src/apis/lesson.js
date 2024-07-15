@@ -91,3 +91,16 @@ export const postQuestionListAPI = async(current, pageSize, title, tages) => {
     }
   })
 }
+
+// AI大模型智能纠错
+export const postAiCorrectAPI = async(questionId, code, lang) => {
+  return httpInstance({
+    method: 'post',
+    url: '/bigmodel/correction',
+    data: {
+      questionId, 
+      code, 
+      lang
+    }
+  })
+}

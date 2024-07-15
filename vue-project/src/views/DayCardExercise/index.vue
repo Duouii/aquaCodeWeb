@@ -2,29 +2,41 @@
 import { useRouter } from 'vue-router';
 import {onMounted, ref, toRefs} from 'vue'
 // import Code from './component/code.vue'
-import { getQuestionAPI, postQuestionAPI,getQuestionResultAPI } from '@/apis/lesson.js'
+import { getQuestionAPI, postQuestionAPI,getQuestionResultAPI, postAiCorrectAPI } from '@/apis/lesson.js'
 import { useRoute } from "vue-router";
 const router = useRouter()
 const route = useRoute();
+
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
+const userInfo = userStore.userInfo
 
 import CodeMirror from 'vue-codemirror6'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { json } from '@codemirror/lang-json';
 import { javascript } from '@codemirror/lang-javascript';
 import {java} from '@codemirror/lang-java'
+import {cpp} from '@codemirror/lang-cpp'
+// markdown格式
+import MarkdownIt from 'markdown-it'
+const md = new MarkdownIt({
+  java: true,
+  html: false,
+  // 启用一些语言中立的替换 + 引号美化
+  typographer:  true,
+  linkify: true,
+})
 
 const codeVal = ref('');
 
-const lang = javascript();
+const lang = java();
 const extensions = [oneDark];
 
 const language = ref('java')
 const selectedLanguage = ref('')
 const selectLanguage = (command) => {
   language.value = command.toString()
-  console.log(language.value);
 }
-
 
 const returnPage = ()=>{
   if (window.history.length <= 1) {
@@ -39,13 +51,12 @@ const question = ref({})
 const getQuestion = async () => {
   const res = await getQuestionAPI(route.params.questionId)
   question.value = res;
-};
-
+  const questionAnswers = JSON.parse(question.value.questionAnswer);
+  question.value.input = questionAnswers.input
+  question.value.output = questionAnswers.output
+}
 const result = ref({})
 const runCode = async() => {
-  console.log(route.params.questionId);
-  console.log(language.value);
-  console.log(codeVal.value);
   const res = await postQuestionAPI(route.params.questionId, language.value, codeVal.value)
   const response = await getQuestionResultAPI(res)
   // const response = await getQuestionResultAPI(183)
@@ -58,7 +69,18 @@ const runCode = async() => {
     // 禁止滚动
     document.body.style.overflow = 'hidden';
   }
-  
+  if(result.value.questionStatus === 0 || 1) {
+    // 显示弹框和遮罩
+    showWaitModal.value = true;
+    // 禁止滚动
+    document.body.style.overflow = 'hidden';
+  }
+  if(result.value.questionStatus === 3) {
+    // 显示弹框和遮罩
+    showErrorModal.value = true
+    // 禁止滚动
+    document.body.style.overflow = 'hidden';
+  }
 };
 const turn = (result) => {
   result.judgeInfoList.forEach(item => {
@@ -66,17 +88,35 @@ const turn = (result) => {
     item.time = (item.time/1024/1024).toFixed(2)
   })
 }
-// 响应式数据
+
+// ai大模型
+const aiVisible = ref(false)
+
+// 成功
 const showModal = ref(false);
-const responseData = ref('');
+// 待判题
+const showWaitModal = ref(false)
+// 失败
+const showErrorModal = ref(false)
 
 // 关闭弹框
 const onCloseModal = () => {
   showModal.value = false;
-
+  showWaitModal.value = false
+  showErrorModal.value = false
   // 恢复滚动
   document.body.style.overflow = '';
 };
+
+const aiCorrect = ref('')
+const aiCorrectShow = ref('')
+// ai纠错
+const sendAi = async() => {
+  const res = await postAiCorrectAPI(route.params.questionId, codeVal.value, language.value)
+  aiCorrect.value = res
+  aiCorrectShow.value = md.render(aiCorrect.value)
+}
+
 onMounted(()=>getQuestion())
 </script>
 
@@ -97,11 +137,11 @@ onMounted(()=>getQuestion())
             </li>
             <li>
               <span>输入用例</span>
-              <div class="code">无</div>
+              <div class="code">{{ question.input }}</div>
             </li>
             <li>
               <span>输出用例</span>
-              <div class="code">Hellow world:-)</div>
+              <div class="code">{{ question.output }}</div>
             </li>
           </ul>
         </el-scrollbar>
@@ -142,17 +182,30 @@ onMounted(()=>getQuestion())
       </div>
       <div class="bottom">
         <ul class="left-bottom">
-          <a href=""><li><div class="icon-feedback"></div>反馈</li></a>
-          <a href=""><li><div class="icon-note"></div>记笔记</li></a>
-          <a href=""><li><div class="icon-revise"></div>讯飞大模型辅助纠错</li></a>
+          <li><div class="icon-feedback"></div>反馈</li>
+          <li><div class="icon-note"></div>记笔记</li>
+          <li @click="aiVisible = true"><div class="icon-revise"></div>讯飞大模型辅助纠错</li>
         </ul>
         <div class="next"><el-button plain size="large">下一题</el-button></div>
       </div>
     </div>
   </div>
-  <!-- 弹框和遮罩 -->
+  <el-drawer v-model="aiVisible" :show-close="false" style="background-color: #ebf0f6">
+    <template #header="{ close, titleId, titleClass }">
+      <h4 :id="titleId" :class="titleClass">讯飞大模型辅助纠错</h4>
+      <el-button type="primary" style="width: 50px" @click="close">
+        返回
+      </el-button>
+    </template>
+    <div class="avatar"><img :src="userInfo.userAvatar" alt=""></div>
+    <div class="showCode">{{ codeVal }}</div>
+    <el-button type="primary" style="width: 80px; margin: 30px 0 0 270px" @click="sendAi">开始纠错</el-button>
+    <div class="avatar aiAvatar"><img src="../../assets/icons/icon-revise.png" alt=""></div>
+    <div class="showAiAnswer">{{ aiCorrectShow }}</div>
+  </el-drawer>
+  <!-- 弹框和遮罩(成功) -->
   <div :class="{ 'modal': true, 'show': showModal }">
-    <div class="window">
+    <div class="window" style="background-color: #EEFFFA">
       <h1>SUCCESS</h1>
       <h2>代码运行成功 :-)</h2>
       <span>测试点</span>
@@ -167,6 +220,23 @@ onMounted(()=>getQuestion())
     <button class="closeBtn" @click="onCloseModal">x</button>
   </div>
   <div :class="{ 'modal-overlay': true, 'show': showModal }"></div>
+  <!-- 弹框和遮罩(判题中) -->
+  <div :class="{ 'modal': true, 'show': showWaitModal }">
+    <div class="window" style="background-color: #d9d9d9">
+      <h1 style="color: #7d7f81">Waiting</h1>
+      <h2 style="color: #2c2c2c">代码正在运行 :-)</h2>
+    </div>
+    <button class="closeBtn" @click="onCloseModal">x</button>
+  </div>
+  <!-- 弹框和遮罩(失败中) -->
+  <div :class="{ 'modal': true, 'show': showErrorModal }">
+    <div class="window" style="background-color: #ffe6e6">
+      <h1 style="color: #ffd8d8">Waiting</h1>
+      <h2 style="color: #FF0000">代码正在运行 :-)</h2>
+    </div>
+    <button class="closeBtn" @click="onCloseModal">x</button>
+  </div>
+  <div :class="{ 'modal-overlay': true, 'show': showErrorModal }"></div>
 </template>
 
 <style lang="scss" scoped>
@@ -180,7 +250,6 @@ onMounted(()=>getQuestion())
   .window {
     width: 500px;
     height: 354px;
-    background-color: #EEFFFA;
     h1 {
       position: absolute;
       left: 40px;
@@ -373,6 +442,7 @@ ul,li,span,h4{
     height: 40px;
     li{
       float: left;
+      cursor: pointer;
     }
     .icon-feedback{
       float: left;
@@ -468,5 +538,38 @@ ul,li,span,h4{
   width: 100%;
   height: 588px;
   background-color: #414447;
+}
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #fff;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.showCode {
+  margin-left: 50px;
+  margin-top: -30px;
+  width: 300px;
+  min-height: 100px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+.showAiAnswer {
+  width: 300px;
+  min-height: 100px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: -30px;
+  margin-left: 20px;
+}
+.aiAvatar {
+  margin-left: 350px;
+  margin-top: 30px
 }
 </style>

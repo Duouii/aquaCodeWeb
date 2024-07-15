@@ -4,6 +4,11 @@ import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { getCoursePageContainAPI, getCourseHistoryAPI } from "@/apis/lesson.js";
 import { useUserStore } from '@/stores/userStore';
+import CodeMirror from 'vue-codemirror6'
+import { oneDark } from '@codemirror/theme-one-dark'
+import { javascript } from '@codemirror/lang-javascript';
+const extensions = [oneDark];
+const lang = javascript();
 const userStore = useUserStore();
 const userInfo = userStore.userInfo
 const router = useRouter();
@@ -13,20 +18,32 @@ const returnPage = () => {
 };
 //差一个结束的标志
 const index = ref(1);
+
+// 代码编辑器
+let codeVal = ref('');
+
+//获取课程
 const coursePage = ref({});
 const getCoursePage = async () => {
   const res = await getCoursePageContainAPI(route.params.cardId, index.value)
   coursePage.value = res;
 };
+
+// 用户历史
 const courseHistory = ref();
 const getCourseHistory = async () => {
   const res = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
   courseHistory.value = res;
 };
 const indexMax = 6
-const percent = 244/5
-let widthT = ref((index.value-1)*percent)
+const percent = 244/6
+let widthT = ref((index.value)*percent)
 let widthB = ref(244-widthT.value)
+
+// 选择题答案
+let correctAnswer = ref()
+// 填空题答案
+let correctCodeAnswer = ref()
 
 const nextPage = async () => {
   if(index.value == indexMax) {
@@ -35,17 +52,46 @@ const nextPage = async () => {
   }
   if(index.value <= indexMax) {
     index.value += 1;
-    if(widthT.value==(indexMax-1)*percent){
+    if(widthT.value==(indexMax)*percent){
       widthB.value = 0
     }
     widthT.value+=percent
     widthB.value-=percent
     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
     coursePage.value = res;
+    if (coursePage.value.pageType == 4) {
+       if(JSON.parse(coursePage.value.pageContent).answer) {
+        correctAnswer = JSON.parse(coursePage.value.pageContent).answer
+      }
+    }
+    // 测试
+    if(coursePage.value.pageType == 3) {
+      codeVal = JSON.parse(coursePage.value.pageContent).code
+      correctCodeAnswer = JSON.parse(coursePage.value.pageContent).output
+      console.log(JSON.parse(coursePage.value.pageContent));
+    }
+   
     const response = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
     courseHistory.value = response
   }
 };
+// 检查答案是否正确
+const option = async(item) => {
+  if(item === correctAnswer) {
+    alert('恭喜你回答正确')
+  } else {
+    alert('再思考一下吧·')
+  }
+}
+
+let isShow = ref(false)
+// 代码运行按钮
+const runCode = () => {
+  codeVal = correctCodeAnswer
+  isShow.value = true
+  console.log(1);
+}
+
 onMounted(async() => {
   await getCoursePage();
   await getCourseHistory();
@@ -64,7 +110,69 @@ onMounted(async() => {
         <el-progress :percentage="100" :show-text="false" :style="{width: widthT+'px'}" />
         <el-progress :percentage="100" :show-text="false" :style="{width: widthB+'px'}"/>
       </div>
-      <div class="title">{{ coursePage.pageContent }}</div>
+      <!-- 课程首页--标题 -->
+      <div v-if="coursePage.pageType === 1" class="pageTypeTitle">
+        <div class="title">{{ JSON.parse(coursePage.pageContent).title }}</div>
+        <span>{{ JSON.parse(coursePage.pageContent).description }}</span>
+        <div class="img"><img :src="JSON.parse(coursePage.pageContent).img" alt=""></div>
+      </div>
+      
+      <!-- 课程描述 -->
+      <div v-if="coursePage.pageType === 2" class="pageTypeTitle">
+        <div class="showContent"></div>
+        <h6>{{ coursePage.pageContent }}</h6>
+      </div>
+
+      <!-- 代码描述题 -->
+      <div v-if="coursePage.pageType === 3" class="pageTypeTitle">
+        <h4>{{ JSON.parse(coursePage.pageContent).description }}</h4>
+          <div class="codeEdit">
+            <el-scrollbar height="110px">
+              <code-mirror 
+                v-model="codeVal" 
+                basic 
+                :indent-with-tab="true"
+                :tabSize="2"
+                :lang="lang" 
+                style="height: 110px; width: 545px" 
+                :extensions="extensions"
+                placeholder="请输入"
+                :readOnly="true"
+              />
+            </el-scrollbar>
+          </div>
+        <div class="run">
+          <el-button plain size="large" @click="runCode">
+            <img src="../../assets/icons/icon-run.png" alt="">运行
+          </el-button>
+        </div>
+        <!-- 运行结果 -->
+        <div class="showCorrectAnswer" v-if="isShow">
+          <el-scrollbar height="80px">
+            <code-mirror 
+              v-model="correctCodeAnswer" 
+              basic 
+              :indent-with-tab="true"
+              :tabSize="2"
+              :lang="lang" 
+              style="height: 80px; width: 545px" 
+              :extensions="extensions"
+              placeholder="正确答案"
+              :readOnly="true"
+            />
+           </el-scrollbar>
+        </div>
+      </div>
+
+      <!-- 选择题 -->
+      <div v-if="coursePage.pageType === 4" class="pageTypeTitle">
+        <h5>{{ JSON.parse(coursePage.pageContent).question }}</h5>
+        <div class="answers">
+          <div class="answer" @click="option(JSON.parse(coursePage.pageContent).options[0])">{{ JSON.parse(coursePage.pageContent).options[0] }}</div>
+          <div class="answer" @click="option(JSON.parse(coursePage.pageContent).options[1])">{{ JSON.parse(coursePage.pageContent).options[1] }}</div>
+        </div>
+      </div>
+      
       <ul class="left-bottom">
         <a href=""><li><div class="icon-feedback"></div>反馈</li></a>
         <a href=""><li><div class="icon-note"></div>记笔记</li></a>
@@ -77,6 +185,12 @@ onMounted(async() => {
 </template>
 
 <style lang="scss" scoped>
+::v-deep .ͼ1 {
+  background-color: #595959;
+}
+::v-deep .ͼo .cm-gutters{
+  background-color: #595959;
+}
 .contain {
   position: relative;
   display: flex;
@@ -105,21 +219,132 @@ onMounted(async() => {
     height: 11.67px;
   }
 }
-.title {
-  position: absolute;
+.pageTypeTitle {
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
-  top: 71px;
-  padding-left: 66px;
-  padding-right: 66px;
-  height: 70px;
-  border-radius: 46px;
-  background-color: #d8e8ff;
-  font-size: 26px;
-  color: $titleColor;
-  text-align: center;
-  line-height: 70px;
+  width: 849px;
+  height: 650px;
+  // background: pink;
+  .title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 71px;
+    padding-left: 66px;
+    padding-right: 66px;
+    border-radius: 46px;
+    background-color: #d8e8ff;
+    font-size: 26px;
+    color: $titleColor;
+    text-align: center;
+    line-height: 70px;
+  }
+  span {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 237px;
+  }
+  .img {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 284px;
+    width: 598px;
+    height: 324px;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  .showContent {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 164px;
+    width: 849px;
+    height: 345px;
+    background-color: #D9D9D9;
+    border-radius: 4px;
+  }
+  h6 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 537px;
+    font-size: 16px;
+  }
+  h5 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 237px;
+    font-size: 16px;
+  }
+  .answers {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    // background-color: #fff;
+    top: 301px;
+    .answer {
+      margin-bottom: 16px;
+      background-color: #fff;
+      padding: 6px 80px;
+      border-radius: 34px;
+    }
+  }
+  h4 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 16px;
+    top: 164px;
+  }
+  .run {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 291px;
+    width: 545px;
+    height: 40px;
+    background-color: #4a4a4b;
+    .el-button{
+    float: right;
+    width: 102px;
+    height: 40px;
+    border-radius: 0;
+    background-color: #05D697;
+    color: #FFFFFF;
+    font-weight: 700;
+    border: none;
+    img{
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      background-size: 12px 12px;
+    }
+  }
+  }
+  .codeEdit {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 221px;
+    width: 545px;
+    background-color: #595959;
+    pointer-events:none
+  }
+  .showCorrectAnswer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 400px;
+    width: 545px;
+    background-color: #595959;
+    pointer-events:none
+  }
 }
+
 .test {
   position: absolute;
   top: 310px;
@@ -137,7 +362,6 @@ onMounted(async() => {
   }
 }
 .test .el-progress:nth-child(1) {
-  // width: 62px;
   ::v-deep .el-progress-bar__inner {
     background-color: #20f9b8;
   }

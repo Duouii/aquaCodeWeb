@@ -18,15 +18,15 @@ export const useUserStore = defineStore('user', () => {
     }
     //2.定义获取接口数据的action函数
     const login = async (data) => {
-        const res = await loginAPI(data)
-        if(res) {
-          userInfo.value = res;
-          state.token = userInfo.value.token
-          setToken(userInfo.value.token)
-          ElMessage({ type: 'success', message: '登录成功' });
-          router.push({ path: '/' })
-          getUserInfo()
-        }
+      const res = await loginAPI(data)
+      if(res) {
+        userInfo.value = res;
+        state.token = userInfo.value.token
+        setToken(userInfo.value.token)
+        ElMessage({ type: 'success', message: '登录成功' });
+        router.push({ path: '/' })
+        await getUserInfo()
+      }
     }
     const getUserInfo = async() => {
         const res = await getUserInfoAPI()
@@ -41,13 +41,13 @@ export const useUserStore = defineStore('user', () => {
         const res = await putUserInfoAPI(data)
         userInfo.value = res
         ElMessage({ type: 'success', message: '修改成功' })
-        getUserInfo()
+        await getUserInfo()
     }
     const putUserPsw = async (data) => {
         const res = await putUserPswAPI(data)
         userInfo.value = res
         ElMessage({ type: 'success', message: '修改成功' })
-        getUserInfo()
+        await getUserInfo()
     }
     //退出时清除用户信息
     const clearUserInfo = () => {
