@@ -18,9 +18,9 @@ const getCoursePage = async () => {
   const res = await getCoursePageContainAPI(route.params.cardId, index.value)
   coursePage.value = res;
 };
-const courseHistory = ref(index);
+const courseHistory = ref();
 const getCourseHistory = async () => {
-  const res = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
+  const res = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
   courseHistory.value = res;
 };
 const indexMax = 6
@@ -36,22 +36,19 @@ const nextPage = async () => {
   if(index.value <= indexMax) {
     index.value += 1;
     if(widthT.value==(indexMax-1)*percent){
-      widthB = 0
+      widthB.value = 0
     }
     widthT.value+=percent
     widthB.value-=percent
-    //拿到用户进入的cardId
-    const response = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
-    courseHistory.value = response
     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
     coursePage.value = res;
-    // const response = await getCourseHistoryAPI(userInfo.userId,1,route.params.cardId,index.value);
-    // courseHistory.value = response
+    const response = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
+    courseHistory.value = response
   }
 };
-onMounted(() => {
-  getCoursePage();
-  getCourseHistory();
+onMounted(async() => {
+  await getCoursePage();
+  await getCourseHistory();
 });
 </script>
 
@@ -130,6 +127,7 @@ onMounted(() => {
   width: 250px;
   height: 10px;
   transform: rotate(90deg);
+  overflow: hidden;
 }
 .test .el-progress {
   float: left;

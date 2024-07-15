@@ -1,5 +1,6 @@
 import httpInstance from "@/utils/http";
 
+// 获取课程卡片
 export const getCourseCardAPI = async() => {
   return httpInstance({
     method: 'get',
@@ -7,6 +8,7 @@ export const getCourseCardAPI = async() => {
   });
 }
 
+// 获取课程卡片里的学习，练习卡片
 export const getCourseCardContainAPI = (courseId) => {
   return httpInstance({
     method: 'get',
@@ -17,6 +19,7 @@ export const getCourseCardContainAPI = (courseId) => {
   });
 }
 
+// 获取学习卡片里的页面
 export const getCoursePageContainAPI = (cardId, index) => {
   return httpInstance({
     method: 'get',
@@ -28,6 +31,7 @@ export const getCoursePageContainAPI = (cardId, index) => {
   });
 }
 
+// 获取用户历史记录
 export const getCourseHistoryAPI = async ( userId, courseId, cardId, pageId ) => {
   return httpInstance({
     url: '/studyHistory/add',
@@ -41,7 +45,7 @@ export const getCourseHistoryAPI = async ( userId, courseId, cardId, pageId ) =>
   });
 }
 
-// 从卡片进入练习
+// 获取练习卡片里的页面
 export const getQuestionAPI =(id) =>{
   return httpInstance({
     url: '/question',
@@ -75,4 +79,15 @@ export const getQuestionResultAPI =async(submitId) =>{
 }
 
 // 刷题中心问题列表
-
+export const postQuestionListAPI = async(current, pageSize, title, tages) => {
+  return httpInstance({
+    method: 'post',
+    url: '/question/list',
+    data: {
+      current, 
+      pageSize, 
+      title, 
+      tages
+    }
+  })
+}

@@ -11,6 +11,31 @@ export const postBanUserAPI = async(userId) => {
   });
 }
 
+// 管理员获取题目列表
+export const postQuestionAPI = async(current, pageSize, title, content, tags) => {
+  return httpInstance({
+    method: 'post',
+    url: '/admin/question/getQuestionPage',
+    data: {
+      current, 
+      pageSize, 
+      title, 
+      content, 
+      tags, 
+    }
+  });
+}
+
+// 管理员根据id获取问题
+export const getQuestionAPI = async(id) => {
+  return httpInstance({
+    url: '/admin/question',
+    params: {
+      id: id
+    }
+  });
+}
+
 // 管理员添加题目
 export const postAddQuestionAPI = async(data) => {
   return httpInstance({
@@ -24,7 +49,7 @@ export const postAddQuestionAPI = async(data) => {
 export const delQuestionAPI = async(id) => {
   return httpInstance({
     method: 'delete',
-    url: '/question/delete',
+    url: '/admin/question/delete',
     data: {
       id
     }
@@ -32,20 +57,11 @@ export const delQuestionAPI = async(id) => {
 }
 
 // 更新问题
-export const putAddQuestionAPI = async(questionId, questionTitle, questionContent, questionTags, questionDifficulty, questionAnswer, questionJudgeConfig, questionCase) => {
+export const putAddQuestionAPI = async(data) => {
   return httpInstance({
     method: 'put',
-    url: '/question/update',
-    data: {
-      questionId,
-      questionTitle, 
-      questionContent, 
-      questionTags, 
-      questionDifficulty, 
-      questionAnswer, 
-      questionJudgeConfig, 
-      questionCase
-    }
+    url: '/admin/question/update',
+    data
   });
 }
 

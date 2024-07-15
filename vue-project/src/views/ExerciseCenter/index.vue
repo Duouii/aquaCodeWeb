@@ -1,9 +1,11 @@
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import { postQuestionListAPI } from '@/apis/lesson.js'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
 import { useRouter } from 'vue-router';
+import { toScore } from '@/components/score.js'
 const router = useRouter()
 const returnPage = ()=>{
   router.push({ path: "/" });
@@ -33,9 +35,25 @@ const options = [
     icon: difficultIcon
   }
 ]
-const score = ref(2)
 
+let questionList = ref([])
+const questionIndex =  ref(1) // 用于保存题目序号的变量
 
+const score = ref()
+const postQuestionList = async() => {
+  const res = await postQuestionListAPI(1, 19, " ", null)
+  questionList.value = res.records
+  console.log(questionList.value);
+  questionList.value = res.records.map(item => {
+    const score = toScore(item.questionDifficulty)
+    return { ...item, score }
+  })
+}
+const getquestionTag = (questionTagsString) => {
+  const questionTags = JSON.parse(questionTagsString);
+  return questionTags;
+};
+onMounted(() => postQuestionList())
 </script>
 <template>
   <div class="background">
@@ -75,75 +93,30 @@ const score = ref(2)
       </div>
       <div class="title">
         <ul>
-          <li>
-            <RouterLink>
+          <li v-for="item in questionList" :key="item.questionId">
+            <RouterLink :to="`/dayCardExercise/${item.questionId}`">
               <div class="container">
                 <div class="circle"></div>
-                <h6>11</h6>
-                <span>循环综合</span>
-                <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-                <div class="label">二叉树</div>
+                <h6>{{ item.questionId }}</h6>
+                <span>{{ item.questionTitle }}</span>
+                <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
+                <div class="labels">
+                  <div class="label" v-if="getquestionTag(item.questionTags)[0]">{{ getquestionTag(item.questionTags)[0] }}</div>
+                  <div class="label2" v-if="getquestionTag(item.questionTags)[1]">{{ getquestionTag(item.questionTags)[1]}}</div>
+                </div>
                 <div class="status">未做</div>
               </div>
             </RouterLink>
             <RouterLink>
               <div class="submit">
                 <h6>已提交</h6>
-                <h3>123</h3>
+                <h3>{{ item.questionSubmitNum }}</h3>
               </div>
             </RouterLink>
             <RouterLink>
               <div class="pass">
-                <h6>已提交</h6>
-                <h3>123</h3>
-              </div>
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink>
-              <div class="container">
-                <div class="circle"></div>
-                <h6>11</h6>
-                <span>循环综合</span>
-                <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-                <div class="label">二叉树</div>
-                <div class="status">未做</div>
-              </div>
-            </RouterLink>
-            <RouterLink>
-              <div class="submit">
-                <h6>已提交</h6>
-                <h3>12</h3>
-              </div>
-            </RouterLink>
-            <RouterLink>
-              <div class="pass">
-                <h6>已提交</h6>
-                <h3>123</h3>
-              </div>
-            </RouterLink>
-          </li>
-          <li>
-            <RouterLink>
-              <div class="container">
-                <div class="circle"></div>
-                <h6>11</h6>
-                <span>循环综合</span>
-                <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-                <div class="label">二叉树</div>
-                <div class="status">未做</div>
-              </div>
-            </RouterLink>
-            <RouterLink>
-              <div class="submit">
-                <h6>已提交</h6>
-                <h3>123</h3>
-              </div>
-            </RouterLink>
-            <RouterLink>
-              <div class="pass">
-                <h6>已提交</h6>
-                <h3>123</h3>
+                <h6>已通过</h6>
+                <h3>{{ item.questionAcceptedNum }}</h3>
               </div>
             </RouterLink>
           </li>
@@ -157,7 +130,7 @@ const score = ref(2)
   box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
 }
 ::v-deep .el-rate{
-  --el-rate-fill-color:#34ECB5;
+  --el-rate-fill-color:#aef7e1;
 }
 .background{
   position: relative;
@@ -297,19 +270,24 @@ const score = ref(2)
       width: 64.5px;
       height: 19.5;
     }
-    .label {
+    .labels {
       position: absolute;
       left: 356px;
       top: 19px;
+      display: flex;
+    }
+    .label, .label2 {
       padding-left: 16px;
       padding-right: 16px;
-      // width: 50px;
       height: 24px;
       border-radius: 4px;
       color: #fff;
       text-align: center;
       line-height: 24px;
       background-color: #7DB1FF;
+    }
+    .label2 {
+      margin-left: 12px;
     }
     .status {
       position: absolute;

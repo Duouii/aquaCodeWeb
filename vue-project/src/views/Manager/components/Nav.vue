@@ -7,6 +7,31 @@ const userInfo = userStore.userInfo
 const toIndividual = () => {
   router.push('/')
 }
+const logout = () => {
+  ElMessageBox.confirm(
+    '确认退出吗？',
+    'Warning',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      ElMessage({
+        type: 'success',
+        message: '已退出，请重新登录',
+      })
+      userStore.clearUserInfo()
+      router.push('/user/login')
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '已取消',
+      })
+    })
+}
 </script>
 <template>
   <Header>

@@ -11,7 +11,8 @@ import Course from '@/views/Course/index.vue'
 import DayCardStudy from '@/views/DayCardStudy/index.vue'
 import DayCardExercise from '@/views/DayCardExercise/index.vue'
 import Manager from '@/views/Manager/index.vue'
-import AddQuestion from '@/views/AddQuestion/index.vue'
+import AddQuestion from '@/views/QuestionAdmin/add.vue'
+import ModifyQuestion from '@/views/QuestionAdmin/modify.vue'
 import Content from '@/views/Manager/components/Content.vue'
 import UserManage from '@/views/Manager/components/UserManage.vue'
 import LessonManage from '@/views/Manager/components/LessonManage.vue'
@@ -62,7 +63,7 @@ const router = createRouter({
       component: FindPassword
     },
     {
-      path: '/course/page/:cardId',
+      path: '/course/:courseId/page/:cardId',
       component: DayCardStudy
     },
     {
@@ -94,6 +95,10 @@ const router = createRouter({
         {
           path: '/manageContent/addQuestion' ,
           component: AddQuestion
+        },
+        {
+          path: '/manageContent/modifyQuestion/:questionId',
+          component: ModifyQuestion
         }
       ]
     }

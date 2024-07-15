@@ -60,7 +60,7 @@ onMounted(()=>getCourseCard())
 
 <style lang="scss" scoped>
 ::v-deep .el-rate {
-  --el-rate-fill-color: $blueColor;
+  --el-rate-fill-color: #5297ff;
 }
 .background{
   position: relative;

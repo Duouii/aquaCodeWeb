@@ -30,7 +30,7 @@ const handleAvatarSuccess = async (res) => {
 const beforeAvatarUpload = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
-  const res = await putUserAvatarAPI(formData);
+  const res = await putUserAvatarAPI(formData)
   handleAvatarSuccess(res);
   ElMessage({ type: 'success', message: '上传成功' })
   return false; 

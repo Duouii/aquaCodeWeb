@@ -33,6 +33,7 @@ async function getCourseCardContain(courseCardValue) {
   if(courseCardValue && courseCardValue.length > 0){
     const res = await getCourseCardContainAPI(route.params.courseId);
     courseCardContain.value = res;
+    console.log(courseCardContain.value.courseId);
     courseCardContain.value.cardList.forEach(item=>{
       if(item.cardType === 'lesson'){
         if(item.status == 1){
@@ -80,7 +81,7 @@ onMounted(async () => {
             <h3>Day1</h3>
             <ul class="dayContain">
               <li v-for="item in cardListLesson"  :key="item.cardId">
-                <RouterLink :to="`/course/page/${item.cardId}`">
+                <RouterLink :to="`/course/${courseCardContain.courseId}/page/${item.cardId}`">
                   <div class="point"></div>
                   <div class="dayList">{{item.cardTitle}}</div>
                 </RouterLink>

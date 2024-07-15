@@ -58,94 +58,46 @@ onMounted(()=>getCourseCard())
         <input class="fl" type="text" placeholder="请输入你要找的题目/题目ID">
       </div>
     </div>
-    <ul class="contain">
-      <li v-for="item in courseCard" :key="item.courseId">
-        <img :src="item.courseCover">
-        <h3>{{item.courseName}}</h3>
-        <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-        <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-        <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-        <div class="progress">
-          <el-progress 
-          :text-inside="true" 
-          :stroke-width="16" 
-          :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
-          :color="customColors"
-          class="text-left"
-          />
-        </div>
-      </li>
-      <li v-for="item in courseCard" :key="item.courseId">
-        <img :src="item.courseCover">
-        <h3>{{item.courseName}}</h3>
-        <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-        <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-        <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-        <div class="progress">
-          <el-progress 
-          :text-inside="true" 
-          :stroke-width="16" 
-          :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
-          :color="customColors"
-          class="text-left"
-          />
-        </div>
-      </li>
-      <li v-for="item in courseCard" :key="item.courseId">
-        <img :src="item.courseCover">
-        <h3>{{item.courseName}}</h3>
-        <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-        <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-        <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-        <div class="progress">
-          <el-progress 
-          :text-inside="true" 
-          :stroke-width="16" 
-          :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
-          :color="customColors"
-          class="text-left"
-          />
-        </div>
-      </li>
-      <li v-for="item in courseCard" :key="item.courseId">
-        <img :src="item.courseCover">
-        <h3>{{item.courseName}}</h3>
-        <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-        <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-        <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-        <div class="progress">
-          <el-progress 
-          :text-inside="true" 
-          :stroke-width="16" 
-          :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
-          :color="customColors"
-          class="text-left"
-          />
-        </div>
-      </li>
-      <li v-for="item in courseCard" :key="item.courseId">
-        <img :src="item.courseCover">
-        <h3>{{item.courseName}}</h3>
-        <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-        <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-        <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-        <div class="progress">
-          <el-progress 
-          :text-inside="true" 
-          :stroke-width="16" 
-          :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
-          :color="customColors"
-          class="text-left"
-          />
-        </div>
-      </li>
-    </ul>
+    <el-scrollbar height="550px">
+      <ul class="contain">
+        <li v-for="item in courseCard" :key="item.courseId">
+          <img :src="item.courseCover">
+          <h3>{{item.courseName}}</h3>
+          <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
+          <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
+          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
+          <div class="modify">修改</div>
+          <div class="delete">删除</div>
+        </li>
+        <li v-for="item in courseCard" :key="item.courseId">
+          <img :src="item.courseCover">
+          <h3>{{item.courseName}}</h3>
+          <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
+          <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
+          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
+          <div class="modify">修改</div>
+          <div class="delete">删除</div>
+        </li>
+        <li v-for="item in courseCard" :key="item.courseId">
+          <img :src="item.courseCover">
+          <h3>{{item.courseName}}</h3>
+          <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
+          <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
+          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
+          <div class="modify">修改</div>
+          <div class="delete">删除</div>
+        </li>
+      </ul>
+    </el-scrollbar>
   </div>
 </template>
 <style lang="scss" scoped>
+::v-deep .el-rate {
+  --el-rate-fill-color: #5297ff;
+}
 .background {
   width: 100%;
-  height: 100%;
+  // height: 100%;
   background-color: #fff;
 }
 .header {
@@ -193,7 +145,7 @@ onMounted(()=>getCourseCard())
   width: 100%;
   // height: 400px;
   padding-left: 49px;
-  background-color: skyblue;
+  // background-color: skyblue;
   display: flex;
   flex-wrap: wrap;
   li {
@@ -215,7 +167,7 @@ onMounted(()=>getCourseCard())
       color: #10428D;
     }
     .difficulty,
-    .subject {
+    .subject,.modify,.delete {
       display: inline-block;
       margin-top: 4px;
       height: 20px;
@@ -224,6 +176,7 @@ onMounted(()=>getCourseCard())
       font-size: 13px;
       color: #0146AF;
       text-align: center;
+      cursor: pointer;
     }
     .difficulty {
       margin-left: 16px;
@@ -235,15 +188,24 @@ onMounted(()=>getCourseCard())
     }
     .score {
       margin-left: 16px;
-      margin-top: 4px;
+      margin-top: 12px;
       width: 53px;
       height: 15px;
     }
-    .progress {
-      margin-left: 16px;
-      margin-top: 19px;
-      width: 222px;
-      height: 16px;
+    .modify,.delete {
+      width: 56px;
+      height: 25px;
+      line-height: 25px;
+    }
+    .modify {
+      margin-left: 123px;
+      background-color: #DDFFF5;
+      color: #17D199;
+    }
+    .delete {
+      margin-left: 11px;
+      background-color: #FFD8D8;
+      color: #FF1313;
     }
   }
 }

@@ -1,9 +1,15 @@
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import { postQuestionAPI, delQuestionAPI } from '@/apis/admin.js'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/userStore';
+import { toScore } from '@/components/score.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
+const userStore = useUserStore()
+const userInfo = userStore.userInfo;
 const router = useRouter();
 const value = ref('')
 const options = [
@@ -26,6 +32,46 @@ const options = [
 const addQuestion = () => {
   router.push('/manageContent/addQuestion')
 }
+const question = ref([])
+const score = ref()
+const postQuestion =  async() => {
+  const res = await postQuestionAPI(1, 19, " ", null, null)
+  question.value = res.records
+  question.value = res.records.map(item => {
+    const score = toScore(item.questionDifficulty)
+    return { ...item, score }
+  })
+}
+const getquestionTag = (questionTagsString) => {
+  const questionTags = JSON.parse(questionTagsString);
+  return questionTags;
+};
+const deleteQuestion = (id) => {
+  ElMessageBox.confirm(
+    '确认删除吗？',
+    'Warning',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(() => {
+    ElMessage({
+      type: 'success',
+      message: '已删除'
+    })
+    // 删除逻辑
+    delQuestionAPI(id).then(() => {
+      window.location.reload();
+    });
+  }).catch(() => {
+    ElMessage({
+      type: 'info',
+      message: '已删除'
+    })
+  })
+}
+onMounted(() => postQuestion())
 </script>
 <template>
   <div class="background">
@@ -66,33 +112,27 @@ const addQuestion = () => {
         </div>
     </div>
     <ul class="title">
-      <li>
-        <div class="circle"></div>
-        <h6>11</h6>
-        <span>循环综合</span>
-        <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-        <div class="label">二叉树</div>
-        <h5>删除</h5>
-        <RouterLink>修改</RouterLink>
-      </li>
-      <li>
-        <div class="circle"></div>
-        <h6>11</h6>
-        <span>循环综合</span>
-        <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-        <div class="label">二叉树</div>
-      </li>
-      <li>
-        <div class="circle"></div>
-        <h6>11</h6>
-        <span>题目</span>
-        <div class="score"><el-rate v-model="score" :max="3" disabled/></div>
-        <div class="label">二叉树</div>
-      </li>
+      <el-scrollbar height="540px">
+        <li v-for="item in question" :key="item.questionId">
+          <div class="circle"></div>
+          <h6>{{ item.questionId }}</h6>
+          <span>{{ item.questionTitle }}</span>
+          <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
+          <div class="labels">
+            <div class="label" v-if="getquestionTag(item.questionTags)[0]">{{ getquestionTag(item.questionTags)[0] }}</div>
+            <div class="label2" v-if="getquestionTag(item.questionTags)[1]">{{ getquestionTag(item.questionTags)[1]}}</div>
+          </div>
+          <h5 @click="deleteQuestion(item.questionId)">删除</h5>
+          <RouterLink :to="`/manageContent/modifyQuestion/${item.questionId}`">修改</RouterLink>
+        </li>
+      </el-scrollbar>
     </ul>
   </div>
 </template>
 <style lang="scss" scoped>
+::v-deep .el-rate{
+  --el-rate-fill-color:#aef7e1;
+}
 .background {
   width: 100%;
   height: 100%;
@@ -151,43 +191,61 @@ const addQuestion = () => {
 .title {
   width: 100%;
   li {
+    position: relative;
     width: 100%;
     height: 48px;
     border-radius: 4px;
     .circle{
-      float: left;
+      // float: left;
+      position: absolute;
+      left: 36px;
+      top: 20px;
       width: 6px;
       height: 6px;
       border-radius: 6px;
-      margin-left: 36px;
-      margin-top: 20px;
+      // margin-left: 36px;
+      // margin-top: 20px;
       background-color: #34ECB5;
     }
     h6{
-      float: left;
+      // float: left;
+      position: absolute;
+      left: 46px;
+      top: 12px;
       font-size: 16px;
-      margin-left: 4px;
-      margin-top: 12px;
+      // margin-left: 4px;
+      // margin-top: 12px;
     }
     span {
-      float: left;
+      // float: left;
+      position: absolute;
+      left: 93px;
+      top: 12px;
       width: 80px;
       font-size: 16px;
-      margin-left: 38px;
-      margin-top: 12px;
+      // margin-left: 38px;
+      // margin-top: 12px;
       text-overflow:ellipsis;
       overflow:hidden;
       white-space: nowrap;
     }
     .score {
-      float: left;
-      margin-left: 39px;
-      margin-top: 14px;
+      position: absolute;
+      left: 248px;
+      top: 14px;
+      // float: left;
+      // margin-left: 39px;
+      // margin-top: 14px;
       width: 64.5px;
       height: 19.5;
     }
-    .label {
-      float: left;
+    .labels {
+      position: absolute; 
+      left: 356px;
+      top: 12px;
+      display: flex;
+    }
+    .label, .label2 {
       padding-left: 16px;
       padding-right: 16px;
       height: 24px;
@@ -195,9 +253,10 @@ const addQuestion = () => {
       color: #fff;
       text-align: center;
       line-height: 24px;
-      margin-left: 43.5px;
-      margin-top: 12px;
       background-color: #7DB1FF;
+    }
+    .label2 {
+      margin-left: 12px;
     }
     h5, a {
       float: right;

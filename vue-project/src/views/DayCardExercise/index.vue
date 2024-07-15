@@ -47,8 +47,8 @@ const runCode = async() => {
   console.log(language.value);
   console.log(codeVal.value);
   const res = await postQuestionAPI(route.params.questionId, language.value, codeVal.value)
-  // const response = await getQuestionResultAPI(res)
-  const response = await getQuestionResultAPI(183)
+  const response = await getQuestionResultAPI(res)
+  // const response = await getQuestionResultAPI(183)
   result.value = response
   turn(result.value)
   // onsubmit()
