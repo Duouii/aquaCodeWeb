@@ -2,7 +2,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
-import { getCoursePageContainAPI, getCourseHistoryAPI, getCardHistoryAPI } from "@/apis/lesson.js";
+import { getCoursePageContainAPI, getCourseHistoryAPI, getCardHistoryAPI, putCardStudyTimeAPI } from "@/apis/lesson.js";
 import { useUserStore } from '@/stores/userStore';
 import CodeMirror from 'vue-codemirror6'
 import { oneDark } from '@codemirror/theme-one-dark'
@@ -22,12 +22,28 @@ const index = ref(1);
 // 代码编辑器
 let codeVal = ref('');
 
+
 //获取课程
 const coursePage = ref({});
 const getCoursePage = async () => {
+  // getCardHistory()
+  // console.log(index.value);
+  // const response = await getCardHistoryAPI(route.params.cardId)
+  // console.log(response);
+  // index.value = response.pageNo
   const res = await getCoursePageContainAPI(route.params.cardId, index.value)
   coursePage.value = res;
 };
+
+// 获取用户历史记录
+// const getCardHistory = async() => {
+//   const res = await getCardHistoryAPI(route.params.cardId)
+//   console.log(res.pageNo);
+//   index.value = res.pageNo
+// }
+
+// 记录时间戳
+let timeStamp = ref()
 
 // 用户历史
 const courseHistory = ref();
@@ -35,7 +51,7 @@ const getCourseHistory = async () => {
   const res = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
   courseHistory.value = res;
 };
-const indexMax = 6
+const indexMax = route.params.pageTotal
 const percent = 244/indexMax
 let widthT = ref((index.value)*percent)
 let widthB = ref(244-widthT.value)
@@ -48,10 +64,15 @@ let correctCodeAnswer = ref()
 let isShowSuccess = ref(false)
 // 是否显示失败
 let isShowError = ref(false)
+// 返回课程中心
+let returnCenter = ref(false)
+// 下一页
+let continuteNext = ref(true)
 
 const nextPage = async () => {
   if(index.value == indexMax) {
-    alert('当前已是最后一页')
+    returnCenter.value = true
+    continuteNext.value = false
     return
   }
   if(index.value <= indexMax) {
@@ -61,6 +82,13 @@ const nextPage = async () => {
     }
     widthT.value+=percent
     widthB.value-=percent
+    // 时间戳
+    timeStamp = parseInt(new Date().getTime()/1000);
+    await putCardStudyTimeAPI(timeStamp)
+
+    // const responses = await getCardHistoryAPI(route.params.cardId)
+    // console.log(responses);
+    // index.value = responses.pageNo
     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
     coursePage.value = res;
 
@@ -80,6 +108,37 @@ const nextPage = async () => {
     courseHistory.value = response
   }
 };
+// const lastPage = async () => {
+//   if(index.value == 1) {
+//     alert('当前已是第一页')
+//     return
+//   }
+//   if(index.value > 1) {
+//     index.value = index.value - 1;
+//     widthT.value-=percent
+//     widthB.value+=percent
+//     // const responses = await getCardHistoryAPI(route.params.cardId)
+//     // console.log(responses);
+//     // index.value = responses.pageNo
+//     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
+//     coursePage.value = res;
+
+//     // 选择题
+//     if (coursePage.value.pageType == 4) {
+//        if(JSON.parse(coursePage.value.pageContent).answer) {
+//         correctAnswer = JSON.parse(coursePage.value.pageContent).answer
+//       }
+//     }
+//     // 代码运行题
+//     if(coursePage.value.pageType == 3) {
+//       codeVal = JSON.parse(coursePage.value.pageContent).code
+//       correctCodeAnswer = JSON.parse(coursePage.value.pageContent).output
+//     }
+   
+//     const response = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
+//     courseHistory.value = response
+//   }
+// };
 // 检查答案是否正确
 const option = async(item) => {
   if(item === correctAnswer) {
@@ -185,8 +244,11 @@ onMounted(async() => {
         <a href=""><li><div class="icon-feedback"></div>反馈</li></a>
         <a href=""><li><div class="icon-note"></div>记笔记</li></a>
       </ul>
+
       <div class="continute">
-        <el-button plain size="large" @click="nextPage">继续</el-button>
+        <!-- <el-button plain size="large" @click="lastPage">上一页</el-button> -->
+        <el-button plain size="large" @click="nextPage" v-if="continuteNext">继续</el-button>
+        <el-button plain size="large" @click="returnPage" v-if="returnCenter">返回课程中心</el-button>
       </div>
     </div> 
   </div>
@@ -459,11 +521,13 @@ onMounted(async() => {
     background-size: 40px 40px;
   }
 }
-.continute .el-button {
+.continute {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   top: 654px;
+}
+.continute .el-button {
   width: 212px;
   height: 52px;
   border-radius: 8px;

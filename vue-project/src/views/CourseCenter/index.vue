@@ -3,23 +3,36 @@ import { onMounted,ref } from 'vue'
 import {getCourseCardAPI} from '@/apis/lesson.js';
 import { useRouter } from 'vue-router';
 import { useRoute } from "vue-router";
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
 const router = useRouter()
 const route = useRoute();
+// 能展示的
+let courseCard = ref([]);
+// 用户不能访问
+let courseLockCard = ref([])
 
-const courseCard = ref([]);
 const getCourseCard = async () => {
   const res = await getCourseCardAPI();
-  courseCard.value = res;
+  res.forEach(item => {
+    if(item.courseStatus == 2) {
+      courseCard.value.push(item)
+    } else {
+      courseLockCard.value.push(item)
+    }
+  })
+  
 };
 const getCourseTag = (courseTagsString) => {
   const courseTags = JSON.parse(courseTagsString);
   return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = userProgress/courseTotalProgress;
+  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
   return userProgressPersent;
 }
-const returnPage = ()=>{
+const returnPage = async()=>{
+  await userStore.getUserInfo()
   router.push({ path: "/" });
 }
 const courseRouter = route.params.courseId
@@ -51,6 +64,23 @@ onMounted(()=>getCourseCard())
                   />
                 </div>
               </RouterLink>
+            </li>
+            <li v-for="item in courseLockCard" :key="item.courseId">
+              <img :src="item.courseCover">
+              <h3>{{item.courseName}}</h3>
+              <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
+              <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
+              <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
+              <div class="progress">
+                <el-progress 
+                :text-inside="true" 
+                :stroke-width="16" 
+                :percentage="getuserProgress(item.courseTotalProgress,item.userProgress)"
+                :color="customColors"
+                class="text-left"
+                />
+              </div>
+              <div class="courseLock"></div>
             </li>
           </ul>
         </div>
@@ -119,7 +149,17 @@ onMounted(()=>getCourseCard())
     flex-direction: row;
     flex-wrap: wrap;
   }
+  .courseLock {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 254px;
+    height: 326px;
+    background: rgba(217, 217, 217,0.7);
+    z-index: 999;
+  }
   ul li {
+    position: relative;
     width: 254px;
     height: 326px;
     border-radius: 4px;
@@ -141,7 +181,7 @@ onMounted(()=>getCourseCard())
     .subject {
       display: inline-block;
       margin-top: 4px;
-      height: 20px;
+      padding: 2px 12px;
       border-radius: 2px;
       background-color: #EDF4FF;
       font-size: 13px;
@@ -150,11 +190,9 @@ onMounted(()=>getCourseCard())
     }
     .difficulty {
       margin-left: 16px;
-      width: 50px;
     }
     .subject {
       margin-left: 8px;
-      width: 63px;
     }
     .score {
       margin-left: 16px;

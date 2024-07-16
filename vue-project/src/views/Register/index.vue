@@ -59,7 +59,7 @@ const doRegister = async() => {
         <div>首页</div>
       </Header>
       <div class="form">
-        <h1>登录</h1>
+        <h1>注册</h1>
         <h3>您可以通过邮箱注册</h3>
         <div class="account-box">
           <div class="form-container">

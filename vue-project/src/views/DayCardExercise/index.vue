@@ -206,7 +206,7 @@ onMounted(()=>getQuestion())
           <li><div class="icon-note"></div>记笔记</li>
           <li @click="aiVisible = true"><div class="icon-revise"></div>讯飞大模型辅助纠错</li>
         </ul>
-        <div class="next"><el-button plain size="large">下一题</el-button></div>
+        <div class="submitList"><el-button plain size="large">查看历史提交记录</el-button></div>
       </div>
     </div>
   </div>
@@ -493,7 +493,7 @@ ul,li,span,h4{
     }
   }
 }
-.next .el-button{
+.submitList .el-button{
   position: absolute;
   left: 1262px;
   top: 20px;

@@ -16,7 +16,7 @@ const getCourseTag = (courseTagsString) => {
   return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = userProgress/courseTotalProgress;
+  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
   return userProgressPersent;
 }
 
@@ -116,19 +116,15 @@ onMounted(()=>getStudyingCourse())
       .subject{
         display: inline-block;
         margin-top: 4px;
-        height: 20px;
+        padding: 2px 12px;
         border-radius: 2px;
         background-color: #FFF2E4;
         font-size: 13px;
         color: #FFAD0E;
         text-align: center;
       }
-      .difficulty{
-        width: 50px;
-      }
       .subject{
         margin-left: 8px;
-        width: 63px;
       }
       .score{
         margin-top: 4px;

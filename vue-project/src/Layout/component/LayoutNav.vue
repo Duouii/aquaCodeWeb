@@ -38,6 +38,9 @@ const logout = () => {
       })
     })
 }
+const toIndividual = () => {
+  router.push('/')
+}
 const manage = () => {
   router.push('/manage')
 }
@@ -59,16 +62,16 @@ onMounted(()=>getUserInfo())
         </div>
         <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item @click="logout">退出账号</el-dropdown-item>
           <el-dropdown-item v-if="userInfo.userRole === 'admin'" @click="manage">管理系统</el-dropdown-item>
+          <el-dropdown-item @click="logout">退出账号</el-dropdown-item>
         </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <h3 class="fr">个人主页</h3>
-      <div class="search fr">
+      <h3 class="fr" @click="toIndividual">个人主页</h3>
+      <!-- <div class="search fr">
         <div class="icon-search fl"></div>
         <input class="fl" type="text" placeholder="输入你想搜索的">
-      </div>
+      </div> -->
     </div>
   </nav>
 </template>
@@ -116,12 +119,14 @@ nav{
     line-height: 78px;
     font-size: 16px;
     margin-right: 16px;
+    cursor: default;
   }
   .userAvatar{
     width: 40px;
     height: 40px;
     margin-top: 19px;
     border-radius: 40px;
+    overflow: hidden;
     .nameFirst {
       width: 100%;
       height: 100%;
@@ -133,31 +138,31 @@ nav{
       font-size: 25px;
     }
   }
-  .search{
-    width: 212px;
-    height: 44px;
-    margin-top: 17px;
-    margin-right: 45px;
-    border-radius: 24px;
-    background-color: #F4F5F5;
-    .icon-search{
-      width: 24px;
-      height: 24px;
-      background: url(../../assets/icons/icon-search.png) no-repeat;
-      background-size: 24px 24px;
-      margin-left: 10px;
-      margin-top: 10px;
-    }
-    input{
-      margin-left: 6px;
-      margin-top: 12px;
-      font-size: 14px;
-      color: #7D7F81;
-      width: 150px;
-      height: 20px;
-      background-color: transparent;
-    }
-  }
+  // .search{
+  //   width: 212px;
+  //   height: 44px;
+  //   margin-top: 17px;
+  //   margin-right: 45px;
+  //   border-radius: 24px;
+  //   background-color: #F4F5F5;
+  //   .icon-search{
+  //     width: 24px;
+  //     height: 24px;
+  //     background: url(../../assets/icons/icon-search.png) no-repeat;
+  //     background-size: 24px 24px;
+  //     margin-left: 10px;
+  //     margin-top: 10px;
+  //   }
+  //   input{
+  //     margin-left: 6px;
+  //     margin-top: 12px;
+  //     font-size: 14px;
+  //     color: #7D7F81;
+  //     width: 150px;
+  //     height: 20px;
+  //     background-color: transparent;
+  //   }
+  // }
 }
 
 </style>

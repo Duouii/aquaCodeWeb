@@ -1,5 +1,5 @@
 <script setup>
-import { getUserInfoAPI } from '@/apis/user';
+// import { getUserInfoAPI } from '@/apis/user';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/userStore';
@@ -7,12 +7,11 @@ const userStore = useUserStore();
 const userInfo = userStore.userInfo
 const router = useRouter()
 
-const getUserInfo=async()=> {
-  const res = await getUserInfoAPI();
+const getUserInfo = async()=> {
+  const res = await userStore.getUserInfo();
   userInfo.value = res;
 }
 
-// const user =  JSON.parse(localStorage.getItem('user'))
 const toUpdate = () => {
   router.push('/user/update');
 }
@@ -64,6 +63,7 @@ onMounted(() => getUserInfo());
     width: 75px;
     height: 75px;
     border-radius: 75px;
+    overflow: hidden;
     .nameFirst{
       width: 100%;
       height: 100%;

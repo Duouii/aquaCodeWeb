@@ -170,7 +170,7 @@ onMounted(()=>getCourseCard())
     .subject,.modify,.delete {
       display: inline-block;
       margin-top: 4px;
-      height: 20px;
+      padding: 2px 12px;
       border-radius: 2px;
       background-color: #EDF4FF;
       font-size: 13px;
@@ -180,11 +180,9 @@ onMounted(()=>getCourseCard())
     }
     .difficulty {
       margin-left: 16px;
-      width: 50px;
     }
     .subject {
       margin-left: 8px;
-      width: 63px;
     }
     .score {
       margin-left: 16px;
@@ -193,8 +191,7 @@ onMounted(()=>getCourseCard())
       height: 15px;
     }
     .modify,.delete {
-      width: 56px;
-      height: 25px;
+      padding: 2px 16px;
       line-height: 25px;
     }
     .modify {

@@ -12,7 +12,6 @@ const router = useRouter()
 const returnPage = async()=>{
   userInfo.userAvatar = userInfo.value.userAvatar
   await userStore.getUserInfo()
-
   router.push('/');
 }
 const activeTab = ref('info');
@@ -279,6 +278,7 @@ const doUpdatePsw = () =>{
     margin-bottom: 27px;
     border-radius: 86px;
     background-size: 86px 86px;
+    overflow: hidden;
     .nameFirst{
       width: 86px;
       height: 86px;

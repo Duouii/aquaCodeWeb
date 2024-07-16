@@ -148,7 +148,7 @@ const toFindPassword =()=>{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  right: 15%;
+  right: 18%;
   width: 370px;
   height: 450px;
   border-radius: 8px;

@@ -5,17 +5,14 @@ import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
 import { useRouter } from 'vue-router';
-// import { toScore } from '@/components/score.js'
+import { useUserStore } from '@/stores/userStore';
+const userStore = useUserStore();
 const router = useRouter()
-const returnPage = ()=>{
+const returnPage = async()=>{
+  await userStore.getUserInfo()
   router.push({ path: "/" });
 }
-// const language = ref('cpp')
-// const selectedLanguage = ref('')
-// const selectLanguage = (command) => {
-//   language.value = command.toString()
-//   console.log(language.value);
-// }
+
 const value = ref('')
 
 const options = [
@@ -36,19 +33,20 @@ const options = [
   }
 ]
 
+// 选择难度
+const checkDifficult = async (difficult) => {
+  console.log(difficult);
+  const res = await postQuestionListAPI(1, 19, " ", null);
+  questionList.value = res.records.filter(item => item.questionDifficulty === difficult);
+}
 
 let questionList = ref([])
-const questionIndex =  ref(1) // 用于保存题目序号的变量
-
+// const questionIndex =  ref(1) // 用于保存题目序号的变量
+const userStatus = ref('')
 // const score = ref()
 const postQuestionList = async() => {
   const res = await postQuestionListAPI(1, 19, " ", null)
   questionList.value = res.records
-  // console.log(questionList.value);
-  // questionList.value = res.records.map(item => {
-  //   const score = toScore(item.questionDifficulty)
-  //   return { ...item, score }
-  // })
 }
 const getquestionTag = (questionTagsString) => {
   const questionTags = JSON.parse(questionTagsString);
@@ -73,6 +71,7 @@ onMounted(() => postQuestionList())
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              @click="checkDifficult(item.value)"
             >
               <template #default>
                 <span style="margin-left: 17px;">
@@ -112,7 +111,9 @@ onMounted(() => postQuestionList())
                   <div class="label" v-if="getquestionTag(item.questionTags)[0]">{{ getquestionTag(item.questionTags)[0] }}</div>
                   <div class="label2" v-if="getquestionTag(item.questionTags)[1]">{{ getquestionTag(item.questionTags)[1]}}</div>
                 </div>
-                <div class="status">未做</div>
+                <div class="status" v-if="item.status == null">未做</div>
+                <div class="status" v-if="item.status == 2" style="color: #17D199">已通过</div>
+                <div class="status" v-if="item.status == 3" style="color: #ff7f7f">未通过</div>
               </div>
             </RouterLink>
             <RouterLink>
@@ -312,7 +313,7 @@ onMounted(() => postQuestionList())
       position: absolute;
       left: 824px;
       top: 14px;
-      width: 40px;
+      width: 80px;
       height: 30px;
       font-size: 20px;
       color: #BCBCBC;

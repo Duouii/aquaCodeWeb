@@ -63,7 +63,7 @@ const router = createRouter({
       component: FindPassword
     },
     {
-      path: '/course/:courseId/page/:cardId',
+      path: '/course/:courseId/page/:pageTotal/:cardId',
       component: DayCardStudy
     },
     {

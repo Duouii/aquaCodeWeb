@@ -28,6 +28,13 @@ const options = [
     icon: difficultIcon
   }
 ]
+
+// 选择难度
+const checkDifficult = async(difficult) => {
+  const res = await postQuestionAPI(1, 19, " ", null, null)
+  question.value = res.records.filter(item => item.questionDifficulty === difficult)
+}
+
 const addQuestion = () => {
   router.push('/manageContent/addQuestion')
 }
@@ -83,6 +90,7 @@ onMounted(() => postQuestion())
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              @click="checkDifficult(item.value)"
             >
               <template #default>
                 <span style="margin-left: 17px;">

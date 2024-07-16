@@ -55,12 +55,36 @@ export const getCardHistoryAPI = async ( cardId ) => {
   });
 }
 
+// 用户记录学习时间
+export const putCardStudyTimeAPI = async ( timeStamp ) => {
+  return httpInstance({
+    url: '/studyHistory/addStudyTime',
+    method: 'put',
+    params: {
+      timeStamp
+    }
+  });
+}
+
 // 获取练习卡片里的页面
 export const getQuestionAPI =(id) =>{
   return httpInstance({
     url: '/question',
     params: {
       id:id
+    },
+  })
+}
+
+// 分页获取提交记录
+export const postQuestioSubmitListAPI =async(current, pageSize, userId) =>{
+  return httpInstance({
+    method: 'post',
+    url: '/question/questionSubmit/pageList',
+    data: {
+      current, 
+      pageSize, 
+      userId
     },
   })
 }

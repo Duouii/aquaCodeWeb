@@ -32,6 +32,7 @@ export const useUserStore = defineStore('user', () => {
     const getUserInfo = async() => {
         const res = await getUserInfoAPI()
         userInfo.value = res
+        userInfo.value.userStudyTime = (userInfo.value.userStudyTime / 1000 / 60).toFixed(2)
     }
     const getRegister = async(data) => {
         await registerAPI(data)

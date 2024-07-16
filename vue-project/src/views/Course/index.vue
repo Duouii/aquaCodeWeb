@@ -1,6 +1,9 @@
 <script setup>
 import { ref,onMounted } from 'vue'
-import { toScore } from '@/components/score.js'
+import difficultIcon from '@/assets/icons/icon-difficult.png'
+import normalIcon from '@/assets/icons/icon-normal.png'
+import easyIcon from '@/assets/icons/icon-easy.png'
+// import { toScore } from '@/components/score.js'
 import {getCourseCardContainAPI,getCourseCardAPI} from '@/apis/lesson.js';
 import {useRoute} from 'vue-router'
 const route = useRoute()
@@ -22,7 +25,7 @@ const getCourseCard = async()=>{
   return courseCard.value;
 }
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = userProgress/courseTotalProgress;
+  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
   return userProgressPersent;
 }
 let cardListLesson=[];
@@ -42,8 +45,8 @@ async function getCourseCardContain(courseCardValue) {
         }
       }
       else if(item.cardType === 'practice'){
-        const score = toScore(item.difficulty)
-        cardListPractice.push({ ...item, score });
+        // const score = toScore(item.difficulty)
+        cardListPractice.push(item);
       }
     });
   }
@@ -69,7 +72,7 @@ onMounted(async () => {
           <el-progress 
           :text-inside="true" 
           :stroke-width="20" 
-          :percentage="userProgressPersent"
+          :percentage="getuserProgress(courseTotalProgress,userProgress)"
           :color="customColors"
           />
         </div>
@@ -80,7 +83,7 @@ onMounted(async () => {
             <!-- <h3>Day1</h3> -->
             <ul class="dayContain">
               <li v-for="item in cardListLesson"  :key="item.cardId">
-                <RouterLink :to="`/course/${courseCardContain.courseId}/page/${item.cardId}`">
+                <RouterLink :to="`/course/${courseCardContain.courseId}/page/${item.total}/${item.cardId}`">
                   <div class="point"></div>
                   <div class="dayList">{{item.cardTitle}}</div>
                 </RouterLink>
@@ -104,7 +107,11 @@ onMounted(async () => {
                   <div class="point"></div>
                   <h6>{{item.questionId}}</h6>
                   <span>{{item.cardTitle}}</span>
-                  <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
+                  <div class="score">
+                    <img v-if="item.difficulty === 'easy'" :src="easyIcon" alt="">
+                    <img v-if="item.difficulty === 'normal'" :src="normalIcon" alt="">
+                    <img v-if="item.difficulty === 'difficult'" :src="difficultIcon" alt="">
+                    </div>
                   <div class="status">已通过</div>
                 </RouterLink>
               </li>
@@ -292,8 +299,14 @@ h4{
         margin-top: 14px;
       }
       .score{
+        width: 64.5px;
+        height: 19.5px;
         margin-left: 66px;
         margin-top: 19px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .status{
         margin-left: 500.5px;
