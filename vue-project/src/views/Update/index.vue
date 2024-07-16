@@ -9,21 +9,25 @@ const userStore = useUserStore()
 const userInfo = userStore.userInfo;
 const router = useRouter()
 
-const returnPage = ()=>{
+const returnPage = async()=>{
+  userInfo.userAvatar = userInfo.value.userAvatar
+  await userStore.getUserInfo()
+
   router.push('/');
-  userStore.getUserInfo()
 }
 const activeTab = ref('info');
 const selectTab = (tab) => {
   activeTab.value = tab
 }
 
-const uploadUrl = '/common/upload'
 const handleAvatarSuccess = async (res) => {
   if (res) {
     userInfo.userAvatar = res;
+    infoUpdate.value.userAvatar = res
+    ElMessage({ type: 'success', message: '上传成功' })
   } else {
     console.error('No image URL received from upload API');
+    return
   }
 };
 
@@ -32,14 +36,13 @@ const beforeAvatarUpload = async (file) => {
   formData.append('file', file);
   const res = await putUserAvatarAPI(formData)
   handleAvatarSuccess(res);
-  ElMessage({ type: 'success', message: '上传成功' })
   return false; 
 };
 
 const infoUpdate=ref({
   userName:'',
   userProfile:'',
-  oldPassword:''
+  userAvatar:'',
 })
 const pswUpdate=ref({
   oldPassword:'',

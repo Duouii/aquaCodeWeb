@@ -1,7 +1,6 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import {onMounted, ref, toRefs} from 'vue'
-// import Code from './component/code.vue'
 import { getQuestionAPI, postQuestionAPI,getQuestionResultAPI, postAiCorrectAPI } from '@/apis/lesson.js'
 import { useRoute } from "vue-router";
 const router = useRouter()
@@ -22,7 +21,6 @@ import MarkdownIt from 'markdown-it'
 const md = new MarkdownIt({
   java: true,
   html: false,
-  // 启用一些语言中立的替换 + 引号美化
   typographer:  true,
   linkify: true,
 })
@@ -32,10 +30,14 @@ const codeVal = ref('');
 const lang = java();
 const extensions = [oneDark];
 
+// const sendAiLanguage = ref('java')
 const language = ref('java')
 const selectedLanguage = ref('')
 const selectLanguage = (command) => {
   language.value = command.toString()
+  // if (command.toString() === 'java 17') {
+    // sendAiLanguage.value = java
+  // }
 }
 
 const returnPage = ()=>{
@@ -58,29 +60,37 @@ const getQuestion = async () => {
 const result = ref({})
 const runCode = async() => {
   const res = await postQuestionAPI(route.params.questionId, language.value, codeVal.value)
-  const response = await getQuestionResultAPI(res)
-  // const response = await getQuestionResultAPI(183)
-  result.value = response
-  turn(result.value)
-  // onsubmit()
-  if(result.value.questionStatus === 2) {
-    // 显示弹框和遮罩
-    showModal.value = true;
-    // 禁止滚动
-    document.body.style.overflow = 'hidden';
-  }
-  if(result.value.questionStatus === 0 || 1) {
-    // 显示弹框和遮罩
-    showWaitModal.value = true;
-    // 禁止滚动
-    document.body.style.overflow = 'hidden';
-  }
-  if(result.value.questionStatus === 3) {
-    // 显示弹框和遮罩
-    showErrorModal.value = true
-    // 禁止滚动
-    document.body.style.overflow = 'hidden';
-  }
+  let timeout = 0
+  const intervalid = setInterval(async()=>{
+    const response = await getQuestionResultAPI(res)
+    // const response = await getQuestionResultAPI(183)
+    result.value = response
+    turn(result.value)
+    
+    // onsubmit()
+    // 成功
+    if(result.value.questionStatus === 2) {
+      // 显示弹框和遮罩
+      showModal.value = true;
+      // 禁止滚动
+      document.body.style.overflow = 'hidden';
+      clearInterval(intervalid)
+    }else if(result.value.questionStatus === 3) {
+      // 显示弹框和遮罩
+      showErrorModal.value = true
+      // 禁止滚动
+      document.body.style.overflow = 'hidden';
+      clearInterval(intervalid)
+    } else {
+      timeout++
+      if (timeout >= 10) {
+        // 显示弹框和遮罩
+        showTimeoutModal.value = true;
+        // 禁止滚动
+        document.body.style.overflow = 'hidden';
+      }
+    }
+  },1000)
 };
 const turn = (result) => {
   result.judgeInfoList.forEach(item => {
@@ -91,30 +101,42 @@ const turn = (result) => {
 
 // ai大模型
 const aiVisible = ref(false)
-
+// 正在等待中
+const showWaiting = ref(false)
+// 再次提问
+const aiAgain = ref(false)
 // 成功
 const showModal = ref(false);
-// 待判题
-const showWaitModal = ref(false)
+// 超时
+const showTimeoutModal = ref(false)
 // 失败
 const showErrorModal = ref(false)
 
 // 关闭弹框
 const onCloseModal = () => {
   showModal.value = false;
-  showWaitModal.value = false
+  showTimeoutModal.value = false
   showErrorModal.value = false
   // 恢复滚动
   document.body.style.overflow = '';
 };
 
+// ai返回结果
 const aiCorrect = ref('')
 const aiCorrectShow = ref('')
 // ai纠错
 const sendAi = async() => {
+  showWaiting.value = true
   const res = await postAiCorrectAPI(route.params.questionId, codeVal.value, language.value)
   aiCorrect.value = res
   aiCorrectShow.value = md.render(aiCorrect.value)
+  showWaiting.value = false
+  aiAgain.value = true
+}
+// 再次提问
+const again = async() => {
+  aiCorrectShow.value = false
+  aiAgain.value = false
 }
 
 onMounted(()=>getQuestion())
@@ -149,7 +171,6 @@ onMounted(()=>getQuestion())
       <div class="right-contain">
         <div class="top">代码编辑器</div>
         <div class="main">
-          <!-- <Code v-model:codeVal="codeVal"  :style="{width: '700px',height: '588px', background: '#414447'}"></Code> -->
           <code-mirror 
             v-model="codeVal" 
             basic 
@@ -168,10 +189,9 @@ onMounted(()=>getQuestion())
             </el-button>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item command="Python">Python</el-dropdown-item>
                 <el-dropdown-item command="cpp">cpp</el-dropdown-item>
-                <el-dropdown-item command="c">C语言</el-dropdown-item>
-                <el-dropdown-item command="java">java</el-dropdown-item>
+                <el-dropdown-item command="c">c</el-dropdown-item>
+                <el-dropdown-item command="java">java 17</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -200,8 +220,11 @@ onMounted(()=>getQuestion())
     <div class="avatar"><img :src="userInfo.userAvatar" alt=""></div>
     <div class="showCode">{{ codeVal }}</div>
     <el-button type="primary" style="width: 80px; margin: 30px 0 0 270px" @click="sendAi">开始纠错</el-button>
-    <div class="avatar aiAvatar"><img src="../../assets/icons/icon-revise.png" alt=""></div>
-    <div class="showAiAnswer">{{ aiCorrectShow }}</div>
+    <div v-if="showWaiting" class="isWaiting">等待中......</div>
+    <div v-if="aiCorrectShow" class="avatar aiAvatar"><img src="../../assets/icons/icon-revise.png" alt=""></div>
+    <div v-if="aiCorrectShow" class="showAiAnswer">{{ aiCorrectShow }}</div>
+    <div v-if="aiAgain" class="avatar" style="margin-top: 30px"><img :src="userInfo.userAvatar" alt=""></div>
+    <el-button v-if="aiAgain" type="primary" style="width: 80px; margin: -50px 0 0 50px" @click="again">继续提问</el-button>
   </el-drawer>
   <!-- 弹框和遮罩(成功) -->
   <div :class="{ 'modal': true, 'show': showModal }">
@@ -221,18 +244,18 @@ onMounted(()=>getQuestion())
   </div>
   <div :class="{ 'modal-overlay': true, 'show': showModal }"></div>
   <!-- 弹框和遮罩(判题中) -->
-  <div :class="{ 'modal': true, 'show': showWaitModal }">
+  <div :class="{ 'modal': true, 'show': showTimeoutModal }">
     <div class="window" style="background-color: #d9d9d9">
-      <h1 style="color: #7d7f81">Waiting</h1>
-      <h2 style="color: #2c2c2c">代码正在运行 :-)</h2>
+      <h1 style="color: #7d7f81">Timeout</h1>
+      <h2 style="color: #2c2c2c">代码运行超时 :-)</h2>
     </div>
     <button class="closeBtn" @click="onCloseModal">x</button>
   </div>
-  <!-- 弹框和遮罩(失败中) -->
+  <!-- 弹框和遮罩(失败) -->
   <div :class="{ 'modal': true, 'show': showErrorModal }">
     <div class="window" style="background-color: #ffe6e6">
-      <h1 style="color: #ffd8d8">Waiting</h1>
-      <h2 style="color: #FF0000">代码正在运行 :-)</h2>
+      <h1 style="color: #ffd8d8">Error</h1>
+      <h2 style="color: #FF0000">代码编译错误 :-)</h2>
     </div>
     <button class="closeBtn" @click="onCloseModal">x</button>
   </div>
@@ -538,6 +561,13 @@ ul,li,span,h4{
   width: 100%;
   height: 588px;
   background-color: #414447;
+}
+.isWaiting {
+  // width: 50px;
+  margin-left: 150px;
+  // padding: 9px 30px;
+  // background: pink;
+  margin-top: 30px;
 }
 .avatar {
   width: 30px;

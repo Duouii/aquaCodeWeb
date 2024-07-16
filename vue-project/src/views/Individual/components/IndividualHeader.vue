@@ -12,10 +12,7 @@ const getUserInfo=async()=> {
   userInfo.value = res;
 }
 
-const user =  JSON.parse(localStorage.getItem('user'))
-console.log(user);
-// console.log(user.userInfo.value.userStudiedCourses);
-console.log(user.userInfo);
+// const user =  JSON.parse(localStorage.getItem('user'))
 const toUpdate = () => {
   router.push('/user/update');
 }
@@ -38,15 +35,15 @@ onMounted(() => getUserInfo());
       <ul class="fr">
         <li class="fl">
           <span>已学课程</span>
-          <h3>{{ user.userInfo.userStudiedCourses}}</h3>
+          <h3>{{ userInfo.userStudiedCourses}}</h3>
         </li>
         <li class="fl">
           <span>已刷题</span>
-          <h3>{{ user.userInfo.value.userAcceptedQuestions }}</h3>
+          <h3>{{ userInfo.userAcceptedQuestions }}</h3>
         </li>
         <li class="fl">
           <span>学习时长</span>
-          <h3>{{ user.userInfo.value.userStudyTime }}</h3>
+          <h3>{{ userInfo.userStudyTime }}</h3>
         </li>
       </ul>
     </div>

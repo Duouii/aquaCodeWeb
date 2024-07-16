@@ -33,10 +33,9 @@ async function getCourseCardContain(courseCardValue) {
   if(courseCardValue && courseCardValue.length > 0){
     const res = await getCourseCardContainAPI(route.params.courseId);
     courseCardContain.value = res;
-    console.log(courseCardContain.value.courseId);
     courseCardContain.value.cardList.forEach(item=>{
       if(item.cardType === 'lesson'){
-        if(item.status == 1){
+        if(item.status == 0){
           cardListLessonLock.push(item)
         } else {
           cardListLesson.push(item);
@@ -78,7 +77,7 @@ onMounted(async () => {
       <div class="contain study-contain" v-if="activeTab === 'study'">
         <ul>
           <li class="li">
-            <h3>Day1</h3>
+            <!-- <h3>Day1</h3> -->
             <ul class="dayContain">
               <li v-for="item in cardListLesson"  :key="item.cardId">
                 <RouterLink :to="`/course/${courseCardContain.courseId}/page/${item.cardId}`">
@@ -98,7 +97,7 @@ onMounted(async () => {
       <div class="contain exercise-contain" v-if="activeTab === 'exercise'">
         <ul>
           <li class="li">
-            <h3>Day1</h3>
+            <!-- <h3>Day1</h3> -->
             <ul class="dayContain">
               <li v-for="item in cardListPractice" :key="item.questionId">
                 <RouterLink v-if="item.cardType === 'practice'" :to="`/dayCardExercise/${item.questionId}`">
@@ -197,10 +196,10 @@ h4{
   height: 500px;
 }
 .study-contain{
-  h3{
-    font-size: 24px;
-    color: $blueXColor;
-  }
+  // h3{
+  //   font-size: 24px;
+  //   color: $blueXColor;
+  // }
   .dayContain{
     width: 873px;
     margin-top: 2px;
@@ -256,10 +255,10 @@ h4{
   margin-bottom: 36px;
 }
 .exercise-contain{
-  h3{
-    font-size: 24px;
-    color: #20BE8F;
-  }
+  // h3{
+  //   font-size: 24px;
+  //   color: #20BE8F;
+  // }
   .dayContain{
     width: 930px;
     margin-top: 20px;

@@ -1,21 +1,21 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, computed} from 'vue'
 import { postQuestionListAPI } from '@/apis/lesson.js'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
 import { useRouter } from 'vue-router';
-import { toScore } from '@/components/score.js'
+// import { toScore } from '@/components/score.js'
 const router = useRouter()
 const returnPage = ()=>{
   router.push({ path: "/" });
 }
-const language = ref('cpp')
-const selectedLanguage = ref('')
-const selectLanguage = (command) => {
-  language.value = command.toString()
-  console.log(language.value);
-}
+// const language = ref('cpp')
+// const selectedLanguage = ref('')
+// const selectLanguage = (command) => {
+//   language.value = command.toString()
+//   console.log(language.value);
+// }
 const value = ref('')
 
 const options = [
@@ -36,18 +36,19 @@ const options = [
   }
 ]
 
+
 let questionList = ref([])
 const questionIndex =  ref(1) // 用于保存题目序号的变量
 
-const score = ref()
+// const score = ref()
 const postQuestionList = async() => {
   const res = await postQuestionListAPI(1, 19, " ", null)
   questionList.value = res.records
-  console.log(questionList.value);
-  questionList.value = res.records.map(item => {
-    const score = toScore(item.questionDifficulty)
-    return { ...item, score }
-  })
+  // console.log(questionList.value);
+  // questionList.value = res.records.map(item => {
+  //   const score = toScore(item.questionDifficulty)
+  //   return { ...item, score }
+  // })
 }
 const getquestionTag = (questionTagsString) => {
   const questionTags = JSON.parse(questionTagsString);
@@ -81,6 +82,9 @@ onMounted(() => postQuestionList())
               </template>
             </el-option>
           </el-select>
+          <div v-if="value==='easy'" class="starShow"><img :src="easyIcon" alt=""></div>
+          <div v-if="value==='normal'" class="starShow"><img :src="normalIcon" alt=""></div>
+          <div v-if="value==='difficult'" class="starShow"><img :src="difficultIcon" alt=""></div>
         </div>
         <div class="search">
           <div class="icon-search fl"></div>
@@ -99,7 +103,11 @@ onMounted(() => postQuestionList())
                 <div class="circle"></div>
                 <h6>{{ item.questionId }}</h6>
                 <span>{{ item.questionTitle }}</span>
-                <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
+                <div class="score">
+                  <img v-if="item.questionDifficulty === 'easy'" :src="easyIcon" alt="">
+                  <img v-if="item.questionDifficulty === 'normal'" :src="normalIcon" alt="">
+                  <img v-if="item.questionDifficulty === 'difficult'" :src="difficultIcon" alt="">
+                  </div>
                 <div class="labels">
                   <div class="label" v-if="getquestionTag(item.questionTags)[0]">{{ getquestionTag(item.questionTags)[0] }}</div>
                   <div class="label2" v-if="getquestionTag(item.questionTags)[1]">{{ getquestionTag(item.questionTags)[1]}}</div>
@@ -174,6 +182,17 @@ onMounted(() => postQuestionList())
     border-radius: 4px;
     .el-select__wrapper{
       box-shadow: 0 0 0 1px rgba(0,0,0,0.0);
+    }  
+  }
+  .starShow {
+    position: absolute;
+    left: 115px;
+    top: 36px;
+    width: 64.5px;
+    height: 19.5px;
+    img {
+      width: 100%;
+      height: 100%;
     }
   }
   .search{

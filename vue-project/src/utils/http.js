@@ -8,7 +8,7 @@ import { getToken } from '@/utils/auth.js'
 // 创建axios实例
 const httpInstance = axios.create({
   baseURL: 'https://api.ziahh.top/api',
-  timeout: 10000
+  timeout: 20000
 })
 
 // axios请求拦截器

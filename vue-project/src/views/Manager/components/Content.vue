@@ -6,7 +6,6 @@ import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
-import { toScore } from '@/components/score.js'
 import { ElMessage, ElMessageBox } from 'element-plus'
 const userStore = useUserStore()
 const userInfo = userStore.userInfo;
@@ -37,10 +36,6 @@ const score = ref()
 const postQuestion =  async() => {
   const res = await postQuestionAPI(1, 19, " ", null, null)
   question.value = res.records
-  question.value = res.records.map(item => {
-    const score = toScore(item.questionDifficulty)
-    return { ...item, score }
-  })
 }
 const getquestionTag = (questionTagsString) => {
   const questionTags = JSON.parse(questionTagsString);
@@ -97,6 +92,9 @@ onMounted(() => postQuestion())
               </template>
             </el-option>
           </el-select>
+          <div v-if="value==='easy'" class="starShow"><img :src="easyIcon" alt=""></div>
+          <div v-if="value==='normal'" class="starShow"><img :src="normalIcon" alt=""></div>
+          <div v-if="value==='difficult'" class="starShow"><img :src="difficultIcon" alt=""></div>
         </div>
         <el-dropdown>
           <el-button type="primary">+</el-button>
@@ -117,7 +115,11 @@ onMounted(() => postQuestion())
           <div class="circle"></div>
           <h6>{{ item.questionId }}</h6>
           <span>{{ item.questionTitle }}</span>
-          <div class="score"><el-rate v-model="item.score" :max="3" disabled/></div>
+          <div class="score">
+            <img v-if="item.questionDifficulty === 'easy'" :src="easyIcon" alt="">
+            <img v-if="item.questionDifficulty === 'normal'" :src="normalIcon" alt="">
+            <img v-if="item.questionDifficulty === 'difficult'" :src="difficultIcon" alt="">
+          </div>
           <div class="labels">
             <div class="label" v-if="getquestionTag(item.questionTags)[0]">{{ getquestionTag(item.questionTags)[0] }}</div>
             <div class="label2" v-if="getquestionTag(item.questionTags)[1]">{{ getquestionTag(item.questionTags)[1]}}</div>
@@ -130,25 +132,37 @@ onMounted(() => postQuestion())
   </div>
 </template>
 <style lang="scss" scoped>
-::v-deep .el-rate{
-  --el-rate-fill-color:#aef7e1;
-}
 .background {
   width: 100%;
   height: 100%;
   background-color: #fff;
 }
 .header {
+  position: relative;
   width: 100%;
   height: 88px;
 }
 .flex .el-select{
-  float: left;
-  margin-left: 36px;
-  margin-top: 24px;
+  // float: left;
+  // margin-left: 36px;
+  // margin-top: 24px;
+  position: absolute;
+  left: 36px;
+  top: 24px;
   border-radius: 4px;
   .el-select__wrapper{
     box-shadow: 0 0 0 1px rgba(0,0,0,0.0);
+  }
+}
+.starShow {
+  position: absolute;
+  left: 90px;
+  top: 34px;
+  width: 64.5px;
+  height: 19.5px;
+  img {
+    width: 100%;
+    height: 100%;
   }
 }
 .el-dropdown {

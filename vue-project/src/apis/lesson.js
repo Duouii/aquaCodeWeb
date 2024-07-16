@@ -45,6 +45,16 @@ export const getCourseHistoryAPI = async ( userId, courseId, cardId, pageId ) =>
   });
 }
 
+// 用户获取某卡片的学习进度
+export const getCardHistoryAPI = async ( cardId ) => {
+  return httpInstance({
+    url: '/studyHistory/getHistory',
+    params: {
+      cardId
+    }
+  });
+}
+
 // 获取练习卡片里的页面
 export const getQuestionAPI =(id) =>{
   return httpInstance({

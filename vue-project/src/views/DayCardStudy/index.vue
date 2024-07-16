@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref, resolveComponent } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
-import { getCoursePageContainAPI, getCourseHistoryAPI } from "@/apis/lesson.js";
+import { getCoursePageContainAPI, getCourseHistoryAPI, getCardHistoryAPI } from "@/apis/lesson.js";
 import { useUserStore } from '@/stores/userStore';
 import CodeMirror from 'vue-codemirror6'
 import { oneDark } from '@codemirror/theme-one-dark'
@@ -36,7 +36,7 @@ const getCourseHistory = async () => {
   courseHistory.value = res;
 };
 const indexMax = 6
-const percent = 244/6
+const percent = 244/indexMax
 let widthT = ref((index.value)*percent)
 let widthB = ref(244-widthT.value)
 
@@ -44,6 +44,10 @@ let widthB = ref(244-widthT.value)
 let correctAnswer = ref()
 // 填空题答案
 let correctCodeAnswer = ref()
+// 是否显示成功
+let isShowSuccess = ref(false)
+// 是否显示失败
+let isShowError = ref(false)
 
 const nextPage = async () => {
   if(index.value == indexMax) {
@@ -59,16 +63,17 @@ const nextPage = async () => {
     widthB.value-=percent
     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
     coursePage.value = res;
+
+    // 选择题
     if (coursePage.value.pageType == 4) {
        if(JSON.parse(coursePage.value.pageContent).answer) {
         correctAnswer = JSON.parse(coursePage.value.pageContent).answer
       }
     }
-    // 测试
+    // 代码运行题
     if(coursePage.value.pageType == 3) {
       codeVal = JSON.parse(coursePage.value.pageContent).code
       correctCodeAnswer = JSON.parse(coursePage.value.pageContent).output
-      console.log(JSON.parse(coursePage.value.pageContent));
     }
    
     const response = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
@@ -78,9 +83,11 @@ const nextPage = async () => {
 // 检查答案是否正确
 const option = async(item) => {
   if(item === correctAnswer) {
-    alert('恭喜你回答正确')
+    isShowSuccess.value = true
+    isShowError.value = false
   } else {
-    alert('再思考一下吧·')
+    isShowError.value = true
+    isShowSuccess.value = false
   }
 }
 
@@ -89,7 +96,6 @@ let isShow = ref(false)
 const runCode = () => {
   codeVal = correctCodeAnswer
   isShow.value = true
-  console.log(1);
 }
 
 onMounted(async() => {
@@ -117,10 +123,15 @@ onMounted(async() => {
         <div class="img"><img :src="JSON.parse(coursePage.pageContent).img" alt=""></div>
       </div>
       
+      <!-- 课程描述(有图) -->
+      <div v-if="coursePage.pageType === 5" class="pageTypeTitle">
+        <div v-if="JSON.parse(coursePage.pageContent).img" class="showContent"><img :src="JSON.parse(coursePage.pageContent).img" alt=""></div>
+        <h6>{{ JSON.parse(coursePage.pageContent).description }}</h6>
+      </div>
+
       <!-- 课程描述 -->
       <div v-if="coursePage.pageType === 2" class="pageTypeTitle">
-        <div class="showContent"></div>
-        <h6>{{ coursePage.pageContent }}</h6>
+        <h2>{{ coursePage.pageContent }}</h2>
       </div>
 
       <!-- 代码描述题 -->
@@ -148,19 +159,7 @@ onMounted(async() => {
         </div>
         <!-- 运行结果 -->
         <div class="showCorrectAnswer" v-if="isShow">
-          <el-scrollbar height="80px">
-            <code-mirror 
-              v-model="correctCodeAnswer" 
-              basic 
-              :indent-with-tab="true"
-              :tabSize="2"
-              :lang="lang" 
-              style="height: 80px; width: 545px" 
-              :extensions="extensions"
-              placeholder="正确答案"
-              :readOnly="true"
-            />
-           </el-scrollbar>
+          <div class="correctAnswer">{{ correctCodeAnswer }}</div>
         </div>
       </div>
 
@@ -168,9 +167,18 @@ onMounted(async() => {
       <div v-if="coursePage.pageType === 4" class="pageTypeTitle">
         <h5>{{ JSON.parse(coursePage.pageContent).question }}</h5>
         <div class="answers">
-          <div class="answer" @click="option(JSON.parse(coursePage.pageContent).options[0])">{{ JSON.parse(coursePage.pageContent).options[0] }}</div>
-          <div class="answer" @click="option(JSON.parse(coursePage.pageContent).options[1])">{{ JSON.parse(coursePage.pageContent).options[1] }}</div>
+          <div 
+            class="answer" 
+            v-for="(option1, index) in JSON.parse(coursePage.pageContent).options" 
+            :key="index"
+            @click="option(option1)"
+            :class="{ 'correct': isShowSuccess && option1 === correctAnswer, 'incorrect': isShowError && option1 !== correctAnswer }" 
+          >
+            {{ option1 }}
+          </div>
         </div>
+        <div v-if="isShowSuccess" class="resultOption resultSuccess">耶！做对啦 :-)</div>
+        <div v-if="isShowError" class="resultOption resultError">错了，再检查检查吧</div>
       </div>
       
       <ul class="left-bottom">
@@ -225,7 +233,6 @@ onMounted(async() => {
   transform: translateX(-50%);
   width: 849px;
   height: 650px;
-  // background: pink;
   .title {
     position: absolute;
     left: 50%;
@@ -255,6 +262,10 @@ onMounted(async() => {
     height: 324px;
     background-color: #fff;
     border-radius: 8px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   .showContent {
     position: absolute;
@@ -265,6 +276,17 @@ onMounted(async() => {
     height: 345px;
     background-color: #D9D9D9;
     border-radius: 4px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  h2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 280px;
+    font-size: 16px;
   }
   h6 {
     position: absolute;
@@ -292,6 +314,30 @@ onMounted(async() => {
       padding: 6px 80px;
       border-radius: 34px;
     }
+  }
+  .resultOption {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 420px;
+    background-color: pink;
+    padding: 9px 54px;
+  }
+  .resultSuccess {
+    color: #03835D;
+    background-color: #C8FFEE;
+  }
+  .resultError {
+    color: #FF1313;
+    background-color: #FFE8E8;
+  }
+  .correct {
+    background-color: #37F3BA !important;
+    color: #fff !important;
+  }
+  .incorrect {
+    background-color: #FF1313 !important;
+    color: #fff !important;
   }
   h4 {
     position: absolute;
@@ -341,7 +387,19 @@ onMounted(async() => {
     top: 400px;
     width: 545px;
     background-color: #595959;
-    pointer-events:none
+    pointer-events:none;
+    border-radius: 8px;
+    min-height: 60px;
+    max-height: 230px;
+    .correctAnswer {
+      width: 100%;
+      min-height: 60px;
+      max-height: 230px;
+      background-color: #595959;
+      border-radius: 8px;
+      color: #fff;
+      padding: 20px;
+    }
   }
 }
 
