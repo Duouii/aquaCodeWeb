@@ -348,7 +348,7 @@ onMounted(async() => {
     left: 50%;
     transform: translateX(-50%);
     top: 280px;
-    font-size: 16px;
+    font-size: 20px;
   }
   h6 {
     position: absolute;

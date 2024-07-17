@@ -66,33 +66,33 @@ export const putAddQuestionAPI = async(data) => {
 }
 
 // 【后台】管理员添加课程
-export const postAddCourseAPI = async(courseName, courseCover, courseDifficulty, courseTags, courseStatus) => {
+export const postAddCourseAPI = async(data) => {
   return httpInstance({
     method: 'post',
     url: '/admin/course/add',
-    data:{
-      courseName, 
-      courseCover, 
-      courseDifficulty, 
-      courseTags, 
-      courseStatus
-    }
+    data
   });
 }
 
+//【后台】管理员上传课程封面 
+// 上传头像
+export const putLessonCoverAPI =(formData)=> {
+  return httpInstance({
+    method: 'post',
+    url: '/common/upload',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
 // 【后台】管理员修改课程
-export const putCourseAPI = async(courseId, courseName, courseCover, courseDifficulty, courseTags, courseStatus) => {
+export const putCourseAPI = async(data) => {
   return httpInstance({
     method: 'put',
-    url: '/admin/course/add',
-    data:{
-      courseId, 
-      courseName, 
-      courseCover, 
-      courseDifficulty, 
-      courseTags, 
-      courseStatus
-    }
+    url: '/admin/course/update',
+    data
   });
 }
 

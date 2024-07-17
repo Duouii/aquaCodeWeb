@@ -28,7 +28,7 @@ const getCourseTag = (courseTagsString) => {
   return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
+  const userProgressPersent = (userProgress/courseTotalProgress).toFixed(2)*100;
   return userProgressPersent;
 }
 const returnPage = async()=>{
@@ -155,7 +155,7 @@ onMounted(()=>getCourseCard())
     top: 0;
     width: 254px;
     height: 326px;
-    background: rgba(217, 217, 217,0.7);
+    background: rgba(181, 181, 181, 0.546);
     z-index: 999;
   }
   ul li {

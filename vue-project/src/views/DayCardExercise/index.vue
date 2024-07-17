@@ -210,21 +210,30 @@ onMounted(()=>getQuestion())
       </div>
     </div>
   </div>
-  <el-drawer v-model="aiVisible" :show-close="false" style="background-color: #ebf0f6">
-    <template #header="{ close, titleId, titleClass }">
-      <h4 :id="titleId" :class="titleClass">讯飞大模型辅助纠错</h4>
-      <el-button type="primary" style="width: 50px" @click="close">
-        返回
-      </el-button>
+  <el-drawer 
+    v-model="aiVisible" 
+    :show-close="false" 
+    style="background-color: #ebf0f6"
+  >
+    <template #header="{ close }">
+      <!-- <h4 :id="titleId" :class="titleClass">讯飞大模型辅助纠错</h4> -->
+      <!-- <el-button style="width: 25px; height: 25px" @click="close"> -->
+        <!-- <img style="width: 100%; height: 100%" src="../../assets/icons/icon-arrow-left.png" alt=""> -->
+      <!-- </el-button> -->
+      <img 
+        src="../../assets/icons/icon-arrow-left.png" 
+        style="position:absolute; left: 24px; top: 20px; width: 25px; height: 25px"
+        @click="close" alt=""
+      >
     </template>
-    <div class="avatar"><img :src="userInfo.userAvatar" alt=""></div>
+    <div class="avatar userAvatar"><img :src="userInfo.userAvatar" alt=""></div>
     <div class="showCode">{{ codeVal }}</div>
-    <el-button type="primary" style="width: 80px; margin: 30px 0 0 270px" @click="sendAi">开始纠错</el-button>
+    <el-button type="primary" style="width: 80px; margin: 30px 0 0 250px" @click="sendAi">开始纠错</el-button>
     <div v-if="showWaiting" class="isWaiting">等待中......</div>
     <div v-if="aiCorrectShow" class="avatar aiAvatar"><img src="../../assets/icons/icon-revise.png" alt=""></div>
     <div v-if="aiCorrectShow" class="showAiAnswer">{{ aiCorrectShow }}</div>
-    <div v-if="aiAgain" class="avatar" style="margin-top: 30px"><img :src="userInfo.userAvatar" alt=""></div>
-    <el-button v-if="aiAgain" type="primary" style="width: 80px; margin: -50px 0 0 50px" @click="again">继续提问</el-button>
+    <div v-if="aiAgain" class="avatar userAvatar" style="margin-top: 30px"><img :src="userInfo.userAvatar" alt=""></div>
+    <el-button v-if="aiAgain" type="primary" style="width: 80px; margin: -60px 0 0 250px" @click="again">继续提问</el-button>
   </el-drawer>
   <!-- 弹框和遮罩(成功) -->
   <div :class="{ 'modal': true, 'show': showModal }">
@@ -245,17 +254,19 @@ onMounted(()=>getQuestion())
   <div :class="{ 'modal-overlay': true, 'show': showModal }"></div>
   <!-- 弹框和遮罩(判题中) -->
   <div :class="{ 'modal': true, 'show': showTimeoutModal }">
-    <div class="window" style="background-color: #d9d9d9">
-      <h1 style="color: #7d7f81">Timeout</h1>
-      <h2 style="color: #2c2c2c">代码运行超时 :-)</h2>
+    <div class="window windows" style="background-color: #F2F2F2">
+      <h1 style="color: #BDBFC1">TIMEOUT</h1>
+      <h2 style="color: #6C7A88">代码运行超时 :-)</h2>
+      <h6>请重新提交</h6>
     </div>
     <button class="closeBtn" @click="onCloseModal">x</button>
   </div>
   <!-- 弹框和遮罩(失败) -->
   <div :class="{ 'modal': true, 'show': showErrorModal }">
-    <div class="window" style="background-color: #ffe6e6">
-      <h1 style="color: #ffd8d8">Error</h1>
-      <h2 style="color: #FF0000">代码编译错误 :-)</h2>
+    <div class="window windows" style="background-color: #FFE6E6">
+      <h1 style="color: #FFB7B7">ERROR</h1>
+      <h2 style="color: #EC1818">代码运行失败 :-)</h2>
+      <h6>再检查检查，再尝试一次吧~</h6>
     </div>
     <button class="closeBtn" @click="onCloseModal">x</button>
   </div>
@@ -273,6 +284,7 @@ onMounted(()=>getQuestion())
   .window {
     width: 500px;
     height: 354px;
+    border-radius: 10px;
     h1 {
       position: absolute;
       left: 40px;
@@ -318,14 +330,24 @@ onMounted(()=>getQuestion())
         }
       } 
     }
-    
+  }
+  .windows {
+    height: 300px;
+    h6 {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 234px;
+      font-size: 16px;
+      color: #7D7F81;
+    }
   }
   .closeBtn {
     width: 30px;
     height: 30px;
     border-radius: 30px;
     background-color: transparent;
-    margin-top: 47px;
+    margin-top: 24px;
     margin-left: 235px;
     font-size: 25px;
     line-height: 30px;
@@ -568,11 +590,12 @@ ul,li,span,h4{
   // padding: 9px 30px;
   // background: pink;
   margin-top: 30px;
+  color: #7D7F81;
 }
 .avatar {
-  width: 30px;
-  height: 30px;
-  border-radius: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
   background-color: #fff;
   overflow: hidden;
   img {
@@ -580,12 +603,16 @@ ul,li,span,h4{
     height: 100%;
   }
 }
+.userAvatar {
+  margin-left: 345px;
+}
 .showCode {
-  margin-left: 50px;
-  margin-top: -30px;
+  margin-left: 30px;
+  margin-top: -40px;
   width: 300px;
   min-height: 100px;
-  background-color: #fff;
+  background-color: #409eff;
+  color: #fff;
   border-radius: 8px;
   padding: 20px;
 }
@@ -595,11 +622,11 @@ ul,li,span,h4{
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
-  margin-top: -30px;
-  margin-left: 20px;
+  margin-top: -40px;
+  margin-left: 55px;
 }
 .aiAvatar {
-  margin-left: 350px;
+  // margin-left: 350px;
   margin-top: 30px
 }
 </style>

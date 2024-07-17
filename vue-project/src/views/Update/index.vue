@@ -167,7 +167,7 @@ const doUpdatePsw = () =>{
   background-color: #F4F5F5;
   resize: none;
   border-radius: 8px;
-  box-shadow: none;
+  box-shadow: 0 0 0 1px #7D7F81;
 }
 ::v-deep .el-form-item__error {
   top: 67%;
@@ -308,8 +308,7 @@ const doUpdatePsw = () =>{
     outline-color: $blueColor;
     border-radius: 8px;
     font-size: 14px;
-    background-color: #f5f4f5;
-    border: 1px #7D7F81 solid;
+    border: 1px #363737 solid;
     font-weight: 700;
   }
 }

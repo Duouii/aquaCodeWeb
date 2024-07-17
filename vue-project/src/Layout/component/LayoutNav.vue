@@ -50,6 +50,7 @@ onMounted(()=>getUserInfo())
 <template>
   <nav>
     <div class="center">
+      <div class="logo fl"><img src="../../assets/images/logo.png" alt=""></div>
       <div class="name fl">Aqua code</div>
       <ul class="toNav fl">
         <li class="fl"><RouterLink active-class="active" to="/course">学习中心</RouterLink></li>
@@ -88,14 +89,24 @@ nav{
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: 1092px;
+  width: 1110px;
   height: 78px;
   background-color: #FFFFFF;
+  .logo {
+    width: 36px;
+    height: 36px;
+    margin-top: 22px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
   .name{
     font-size: 24px;
     color: $titleColor;
     line-height: 78px;
     font-weight: 700;
+    margin-left: 17px;
   }
   .toNav{
     width: 300px;

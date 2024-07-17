@@ -50,6 +50,7 @@ ul {
     position: relative;
     width: 100%;
     height: 58px;
+    margin-bottom: 20px;
     img {
       width: 24px;
       height: 24px;
@@ -65,10 +66,7 @@ ul {
     }
   }
   li:hover {
-    background-color: #E3EEFF;
+    background-color: #E3EEFF !important;
   }
-  // li.active {
-  //   background-color: #E3EEFF;
-  // }
 }
 </style>

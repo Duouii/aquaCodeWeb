@@ -138,3 +138,10 @@ export const postAiCorrectAPI = async(questionId, code, lang) => {
     }
   })
 }
+
+// AI题目推荐
+export const getAirecommendAPI = async() => {
+  return httpInstance({
+    url: '/bigmodel/recommend',
+  })
+}

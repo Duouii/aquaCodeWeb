@@ -25,7 +25,7 @@ const getCourseCard = async()=>{
   return courseCard.value;
 }
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
+  const userProgressPersent = (userProgress/courseTotalProgress).toFixed(2)*100;
   return userProgressPersent;
 }
 let cardListLesson=[];
@@ -72,7 +72,7 @@ onMounted(async () => {
           <el-progress 
           :text-inside="true" 
           :stroke-width="20" 
-          :percentage="getuserProgress(courseTotalProgress,userProgress)"
+          :percentage="getuserProgress(courseCardContain.courseTotalProgress,courseCardContain.userProgress)"
           :color="customColors"
           />
         </div>

@@ -54,7 +54,7 @@ const doRegister = async() => {
 <template>
     <div class="register-container">
       <Header>
-        <div></div>
+        <div><img src="../../assets/images/logo.png" alt=""></div>
         <div>Aqua code</div>
         <div>首页</div>
       </Header>

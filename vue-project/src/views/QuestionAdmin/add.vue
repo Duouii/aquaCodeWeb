@@ -64,7 +64,6 @@ const submit = async() => {
     ],
   }
   const res = await postAddQuestionAPI(submitForm)
-  console.log(res);
   ElMessage({ type: 'success', message: '添加成功' });
 }
 const returnPage = ()=>{
@@ -87,25 +86,28 @@ const returnPage = ()=>{
           </el-form-item>
           <el-form-item label="问题难度">
             <el-select
-            v-model="form.questionDifficulty"
-            placeholder="选择难度"
-            size="large"
-            style="width: 165px; background: #f4f5f5"
-          >
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-              <template #default>
-                <span style="margin-left: 17px;">
-                  {{ item.label }}
-                  <img :src="item.icon" alt="icon" style="width: 64.5px" />
-                </span>
-              </template>
-            </el-option>
-          </el-select>
+                v-model="form.questionDifficulty"
+                placeholder="选择难度"
+                size="large"
+                style="width: 165px; background: #f4f5f5"
+              >
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+                <template #default>
+                  <span style="margin-left: 17px;">
+                    {{ item.label }}
+                    <img :src="item.icon" alt="icon" style="width: 64.5px" />
+                  </span>
+                </template>
+              </el-option>
+            </el-select>
+            <div v-if="form.questionDifficulty==='easy'" class="starShow"><img :src="easyIcon" alt=""></div>
+            <div v-if="form.questionDifficulty==='normal'" class="starShow"><img :src="normalIcon" alt=""></div>
+            <div v-if="form.questionDifficulty==='difficult'" class="starShow"><img :src="difficultIcon" alt=""></div>
           </el-form-item>
           <el-form-item style="margin-top: 32px" label="问题内容" >
             <el-input v-model="form.questionContent" class="textarea" type="textarea" :autosize="{minRows: 10, maxRows: 10}"  maxlength="500"/>
@@ -188,7 +190,7 @@ h2 {
   font-size: 24px;
 }
 .title {
-  position: absolute;
+  position: relative;
   left: 50%;
   transform: translateX(-50%);
   top: 80px;
@@ -198,5 +200,16 @@ h2 {
 }
 .question .el-input {
   --el-input-width: 170px !important;
+}
+.starShow {
+  position: absolute;
+  left: 50px;
+  top: 3px;
+  width: 64.5px;
+  height: 19.5px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

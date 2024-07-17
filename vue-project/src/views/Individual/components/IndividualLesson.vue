@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { getStudyingCourseAPI } from '@/apis/user'
 
 const customColors = [
-  { color: '#FFAD0E' },
+  { color: '#5297FF' },
 ]
 const studyingCourse = ref([])
 
@@ -16,7 +16,7 @@ const getCourseTag = (courseTagsString) => {
   return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = Math.round(userProgress/courseTotalProgress);
+  const userProgressPersent = (userProgress/courseTotalProgress).toFixed(2)*100;
   return userProgressPersent;
 }
 
@@ -53,7 +53,7 @@ onMounted(()=>getStudyingCourse())
 
 <style lang="scss" scoped>
 ::v-deep .el-rate{
-  --el-rate-fill-color:#FFC24B;
+  --el-rate-fill-color:#5297FF;
 }
 .lesson{
   position: relative;
@@ -110,7 +110,7 @@ onMounted(()=>getStudyingCourse())
       h3{
         margin-top: 10px;
         font-size: 20px;
-        color: #BA5004;
+        color: #5297FF;
       }
       .difficulty,
       .subject{
@@ -118,9 +118,9 @@ onMounted(()=>getStudyingCourse())
         margin-top: 4px;
         padding: 2px 12px;
         border-radius: 2px;
-        background-color: #FFF2E4;
+        background-color: #EDF4FF;
         font-size: 13px;
-        color: #FFAD0E;
+        color: #0146AF;
         text-align: center;
       }
       .subject{

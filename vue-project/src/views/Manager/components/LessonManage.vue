@@ -3,7 +3,8 @@ import {ref,onMounted} from 'vue'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
-import {getCourseCardAPI} from '@/apis/lesson.js';
+import { getCourseCardAPI } from '@/apis/lesson.js';
+import { delCourseAPI, postCourseAPI } from '@/apis/admin.js'
 import { useRouter } from "vue-router";
 const router = useRouter();
 const value = ref('')
@@ -24,21 +25,46 @@ const options = [
     icon: difficultIcon
   }
 ]
-const addQuestion = () => {
-  router.push('/manageContent/addQuestion')
+const addLesson = () => {
+  router.push('/manageContent/addLesson')
 }
 const courseCard = ref([]);
 const getCourseCard = async () => {
-  const res = await getCourseCardAPI();
-  courseCard.value = res;
+  const res = await postCourseAPI(1,50,null,null,null,null)
+  courseCard.value = res.records;
 };
 const getCourseTag = (courseTagsString) => {
   const courseTags = JSON.parse(courseTagsString);
   return courseTags;
 };
 const getuserProgress = (courseTotalProgress,userProgress)=>{
-  const userProgressPersent = userProgress/courseTotalProgress;
+  const userProgressPersent = (userProgress/courseTotalProgress).toFixed(2)*100;
   return userProgressPersent;
+}
+const deleteLesson = (id) => {
+  ElMessageBox.confirm(
+    '确认删除吗？',
+    'Warning',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(() => {
+    ElMessage({
+      type: 'success',
+      message: '已删除'
+    })
+    // 删除逻辑
+    delCourseAPI(id).then(() => {
+      window.location.reload();
+    });
+  }).catch(() => {
+    ElMessage({
+      type: 'info',
+      message: '已删除'
+    })
+  })
 }
 onMounted(()=>getCourseCard())
 </script>
@@ -49,14 +75,14 @@ onMounted(()=>getCourseCard())
         <el-button type="primary">+</el-button>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="addQuestion">添加课程</el-dropdown-item>
+            <el-dropdown-item @click="addLesson">添加课程</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
-      <div class="search">
+      <!-- <div class="search">
         <div class="icon-search fl"></div>
-        <input class="fl" type="text" placeholder="请输入你要找的题目/题目ID">
-      </div>
+        <input v-model="userSearch" class="fl" type="text" placeholder="请输入你要找的题目/题目ID">
+      </div> -->
     </div>
     <el-scrollbar height="550px">
       <ul class="contain">
@@ -65,27 +91,11 @@ onMounted(()=>getCourseCard())
           <h3>{{item.courseName}}</h3>
           <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
           <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-          <div class="modify">修改</div>
-          <div class="delete">删除</div>
-        </li>
-        <li v-for="item in courseCard" :key="item.courseId">
-          <img :src="item.courseCover">
-          <h3>{{item.courseName}}</h3>
-          <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-          <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-          <div class="modify">修改</div>
-          <div class="delete">删除</div>
-        </li>
-        <li v-for="item in courseCard" :key="item.courseId">
-          <img :src="item.courseCover">
-          <h3>{{item.courseName}}</h3>
-          <div class="difficulty" v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[0]}}</div>
-          <div class="subject"  v-if="getCourseTag(item.courseTags)">{{ getCourseTag(item.courseTags)[1]}}</div>
-          <div class="score"><el-rate v-model="item.courseDifficulty" :max="3" disabled/></div>
-          <div class="modify">修改</div>
-          <div class="delete">删除</div>
+          <div class="score">
+            <el-rate v-model="item.courseDifficulty" :max="3" disabled/>
+            </div>
+          <RouterLink :to="`/manageContent/modifyLesson/${item.courseId}`"><div class="modify">修改</div></RouterLink>
+          <div class="delete" @click="deleteLesson(item.courseId)">删除</div>
         </li>
       </ul>
     </el-scrollbar>
@@ -97,7 +107,7 @@ onMounted(()=>getCourseCard())
 }
 .background {
   width: 100%;
-  // height: 100%;
+  border-radius: 4px;
   background-color: #fff;
 }
 .header {
@@ -116,31 +126,31 @@ onMounted(()=>getCourseCard())
   font-size: 30px;
   color: #fff;
 }
-.search{
-  float: right;
-  width: 612px;
-  height: 40px;
-  border-radius: 4px;
-  margin-right: 29px;
-  margin-top: 24px;
-  background-color: #F4F5F5;
-  .icon-search{
-    width: 24px;
-    height: 24px;
-    background: url(../../../assets/icons/icon-search.png) no-repeat;
-    background-size: 24px 24px;
-    margin-left: 10px;
-    margin-top: 8px;
-  }
-  input{
-    font-size: 14px;
-    color: #7D7F81;
-    margin-left: 10px;
-    width: 560px;
-    height: 40px;
-    background-color: transparent;
-  }
-}
+// .search{
+//   float: right;
+//   width: 612px;
+//   height: 40px;
+//   border-radius: 4px;
+//   margin-right: 29px;
+//   margin-top: 24px;
+//   background-color: #F4F5F5;
+//   .icon-search{
+//     width: 24px;
+//     height: 24px;
+//     background: url(../../../assets/icons/icon-search.png) no-repeat;
+//     background-size: 24px 24px;
+//     margin-left: 10px;
+//     margin-top: 8px;
+//   }
+//   input{
+//     font-size: 14px;
+//     color: #7D7F81;
+//     margin-left: 10px;
+//     width: 560px;
+//     height: 40px;
+//     background-color: transparent;
+//   }
+// }
 .contain {
   width: 100%;
   // height: 400px;

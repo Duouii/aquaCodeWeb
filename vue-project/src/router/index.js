@@ -16,6 +16,8 @@ import ModifyQuestion from '@/views/QuestionAdmin/modify.vue'
 import Content from '@/views/Manager/components/Content.vue'
 import UserManage from '@/views/Manager/components/UserManage.vue'
 import LessonManage from '@/views/Manager/components/LessonManage.vue'
+import AddLesson from '@/views/LessonAdmin/add.vue'
+import ModifyLesson from '@/views/LessonAdmin/modify.vue'
 import ManageContent from '@/views/ManageContent/index.vue'
 
 import nProgress from 'nprogress'
@@ -99,7 +101,15 @@ const router = createRouter({
         {
           path: '/manageContent/modifyQuestion/:questionId',
           component: ModifyQuestion
-        }
+        },
+        {
+          path: '/manageContent/addLesson',
+          component: AddLesson
+        },
+        {
+          path: '/manageContent/modifyLesson/:lessonId',
+          component: ModifyLesson
+        },
       ]
     }
   ]

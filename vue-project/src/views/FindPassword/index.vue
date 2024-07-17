@@ -50,7 +50,7 @@ const doLogin = () => {
 <template>
     <div class="findPassword-container">
       <Header>
-        <div></div>
+        <div><img src="../../assets/images/logo.png" alt=""></div>
         <div>Aqua code</div>
         <div>首页</div>
       </Header>

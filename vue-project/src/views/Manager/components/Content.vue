@@ -41,7 +41,7 @@ const addQuestion = () => {
 const question = ref([])
 const score = ref()
 const postQuestion =  async() => {
-  const res = await postQuestionAPI(1, 19, " ", null, null)
+  const res = await postQuestionAPI(1, 50, " ", null, null)
   question.value = res.records
 }
 const getquestionTag = (questionTagsString) => {
@@ -73,17 +73,23 @@ const deleteQuestion = (id) => {
     })
   })
 }
+const adminSearch = ref('')
+const adminSearching = async() => {
+  const res = await postQuestionAPI(1, 50, " ", null, null);
+  // questionList.value = res.records
+  question.value = res.records.filter(item => item.questionTitle === adminSearch.value);
+}
 onMounted(() => postQuestion())
 </script>
 <template>
   <div class="background">
     <div class="header">
-        <div class="flex flex-wrap gap-4 items-center">
+        <div class="flex flex-wrap gap-4 items-center" style="color: #7D7F81">
           <el-select
             v-model="value"
             placeholder="选择难度"
             size="large"
-            style="width: 165px"
+            style="width: 165px; color: #7D7F81"
           >
             <el-option
               v-for="item in options"
@@ -91,6 +97,7 @@ onMounted(() => postQuestion())
               :label="item.label"
               :value="item.value"
               @click="checkDifficult(item.value)"
+              style=" color: #7D7F81"
             >
               <template #default>
                 <span style="margin-left: 17px;">
@@ -114,7 +121,8 @@ onMounted(() => postQuestion())
         </el-dropdown>
         <div class="search">
           <div class="icon-search fl"></div>
-          <input class="fl" type="text" placeholder="请输入你要找的题目/题目ID">
+          <input v-model="adminSearch" class="fl" type="text" placeholder="请输入你要找的题目">
+          <div class="isSearching" @click="adminSearching">搜索</div>
         </div>
     </div>
     <ul class="title">
@@ -144,6 +152,7 @@ onMounted(() => postQuestion())
   width: 100%;
   height: 100%;
   background-color: #fff;
+  border-radius: 4px;
 }
 .header {
   position: relative;
@@ -151,16 +160,13 @@ onMounted(() => postQuestion())
   height: 88px;
 }
 .flex .el-select{
-  // float: left;
-  // margin-left: 36px;
-  // margin-top: 24px;
   position: absolute;
   left: 36px;
   top: 24px;
   border-radius: 4px;
-  .el-select__wrapper{
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.0);
-  }
+}
+::v-deep .el-select__placeholder{
+  color: #7D7F81 !important;
 }
 .starShow {
   position: absolute;
@@ -186,6 +192,7 @@ onMounted(() => postQuestion())
   color: #fff;
 }
 .search{
+  position: relative;
   float: right;
   width: 612px;
   height: 40px;
@@ -193,6 +200,13 @@ onMounted(() => postQuestion())
   margin-right: 29px;
   margin-top: 24px;
   background-color: #F4F5F5;
+  .isSearching {
+    position: absolute;
+    top:10px;
+    left: 550px;
+    color: #7D7F81;
+    cursor: default;
+}
   .icon-search{
     width: 24px;
     height: 24px;
@@ -218,28 +232,21 @@ onMounted(() => postQuestion())
     height: 48px;
     border-radius: 4px;
     .circle{
-      // float: left;
       position: absolute;
       left: 36px;
       top: 20px;
       width: 6px;
       height: 6px;
       border-radius: 6px;
-      // margin-left: 36px;
-      // margin-top: 20px;
       background-color: #34ECB5;
     }
     h6{
-      // float: left;
       position: absolute;
       left: 46px;
       top: 12px;
       font-size: 16px;
-      // margin-left: 4px;
-      // margin-top: 12px;
     }
     span {
-      // float: left;
       position: absolute;
       left: 93px;
       top: 12px;
@@ -286,7 +293,7 @@ onMounted(() => postQuestion())
     }
     h5 {
       color: #FF1313;
-      margin-right: 26px;
+      margin-right: 44px;
       margin-top: 14px;
       cursor: pointer;
     }

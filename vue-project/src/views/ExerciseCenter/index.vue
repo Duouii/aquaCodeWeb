@@ -1,12 +1,14 @@
 <script setup>
 import {onMounted, ref, computed} from 'vue'
-import { postQuestionListAPI } from '@/apis/lesson.js'
+import { postQuestionListAPI, getAirecommendAPI } from '@/apis/lesson.js'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/userStore';
+
 const userStore = useUserStore();
+const userInfo = userStore.userInfo
 const router = useRouter()
 const returnPage = async()=>{
   await userStore.getUserInfo()
@@ -36,7 +38,7 @@ const options = [
 // 选择难度
 const checkDifficult = async (difficult) => {
   console.log(difficult);
-  const res = await postQuestionListAPI(1, 19, " ", null);
+  const res = await postQuestionListAPI(1, 50, " ", null);
   questionList.value = res.records.filter(item => item.questionDifficulty === difficult);
 }
 
@@ -45,13 +47,46 @@ let questionList = ref([])
 const userStatus = ref('')
 // const score = ref()
 const postQuestionList = async() => {
-  const res = await postQuestionListAPI(1, 19, " ", null)
+  const res = await postQuestionListAPI(1, 50, " ", null)
   questionList.value = res.records
 }
 const getquestionTag = (questionTagsString) => {
   const questionTags = JSON.parse(questionTagsString);
   return questionTags;
 };
+// 用户输入
+const userSearch = ref('')
+const userSearching = async() => {
+  console.log(userSearch.value);
+  const res = await postQuestionListAPI(1, 50, " ", null);
+  // questionList.value = res.records
+  questionList.value = res.records.filter(item => item.questionTitle === userSearch.value);
+}
+
+// ai推题
+const aiVisible = ref(false)
+// 正在等待中
+const showWaiting = ref(false)
+// 再次提问
+const aiAgain = ref(false)
+
+// ai返回结果
+const aiCorrect = ref('')
+const aiCorrectShow = ref('')
+// ai纠错
+const sendAi = async() => {
+  showWaiting.value = true
+  const res = await getAirecommendAPI()
+  aiCorrect.value = res
+  aiCorrectShow.value = res
+  showWaiting.value = false
+  aiAgain.value = true
+}
+// 再次提问
+const again = async() => {
+  aiCorrectShow.value = false
+  aiAgain.value = false
+}
 onMounted(() => postQuestionList())
 </script>
 <template>
@@ -87,11 +122,12 @@ onMounted(() => postQuestionList())
         </div>
         <div class="search">
           <div class="icon-search fl"></div>
-          <input class="fl" type="text" placeholder="搜索你想要练习的题目">
+          <input v-model="userSearch" class="fl" type="text" placeholder="搜索你想要练习的题目">
+          <div class="isSearching" @click="userSearching">搜索</div>
         </div>
         <div class="ai">
           <img src="../../assets/icons/icon-revise.png" alt="">
-          <h3>AI推荐刷题</h3>
+          <h3 @click="aiVisible = true">AI推荐刷题</h3>
         </div>
       </div>
       <div class="title">
@@ -132,6 +168,26 @@ onMounted(() => postQuestionList())
         </ul>
       </div>
     </div>
+    <el-drawer 
+    v-model="aiVisible" 
+    :show-close="false" 
+    style="background-color: #ebf0f6"
+  >
+    <template #header="{ close }">
+      <img 
+        src="../../assets/icons/icon-arrow-left.png" 
+        style="position:absolute; left: 24px; top: 20px; width: 25px; height: 25px"
+        @click="close" alt=""
+      >
+    </template>
+    <div class="avatar userAvatar"><img :src="userInfo.userAvatar" alt=""></div>
+    <el-button type="primary" style="width: 80px; margin: -60px 0 0 250px" @click="sendAi">获取题目</el-button>
+    <div v-if="showWaiting" class="isWaiting">等待中......</div>
+    <div v-if="aiCorrectShow" class="avatar aiAvatar"><img src="../../assets/icons/icon-revise.png" alt=""></div>
+    <div v-if="aiCorrectShow" class="showAiAnswer">{{ aiCorrectShow }}</div>
+    <div v-if="aiAgain" class="avatar userAvatar" style="margin-top: 30px"><img :src="userInfo.userAvatar" alt=""></div>
+    <el-button v-if="aiAgain" type="primary" style="width: 80px; margin: -65px 0 0 250px" @click="again">继续获取</el-button>
+  </el-drawer>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -168,14 +224,20 @@ onMounted(() => postQuestionList())
     transform: translateX(-50%);
     margin-top: 118px;
     width: 1108px;
-    // height: 820px;
-    // background-color: pink;
 }
 .search-container{
+  position: relative;
   width: 1108px;
   height: 93px;
   border-radius: 6px;
   background-color: #fff;
+  .isSearching{
+    position: absolute;
+    top:10px;
+    left: 550px;
+    color: #7D7F81;
+    cursor: default;
+  }
   .flex .el-select{
     position: absolute;
     left: 63px;
@@ -240,6 +302,7 @@ onMounted(() => postQuestionList())
       color: #04357E;
       margin-left: 12px;
       line-height: 32px;
+      cursor: default;
     }
   }
 }
@@ -360,4 +423,36 @@ onMounted(() => postQuestionList())
     }
   }
 }
+.isWaiting {
+  // width: 50px;
+  margin-left: 150px;
+  // padding: 9px 30px;
+  // background: pink;
+  // margin-top: 30px;
+  color: #7D7F81;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+  background-color: #fff;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.userAvatar {
+  margin-left: 345px;
+}
+.showAiAnswer {
+  width: 300px;
+  min-height: 100px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: -40px;
+  margin-left: 55px;
+}
+
 </style>
