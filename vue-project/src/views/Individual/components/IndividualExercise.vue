@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { getAcceptQuestionAPI } from '@/apis/user'
-// import { toScore } from '@/components/score.js'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
@@ -9,10 +8,6 @@ import easyIcon from '@/assets/icons/icon-easy.png'
 const acceptQuestion = ref([])
 const getAcceptQuestion = async() => {
   const res = await getAcceptQuestionAPI()
-  // acceptQuestion.value = res.map(item => {
-  //   const score = toScore(item.questionDifficulty)
-  //   return { ...item, score };
-  // });
   acceptQuestion.value = res
 };
 onMounted(()=>getAcceptQuestion())
@@ -29,7 +24,6 @@ onMounted(()=>getAcceptQuestion())
             <h6>{{ item.questionId }}</h6>
             <span>{{ item.questionTitle }}</span>
             <div class="score">
-              <!-- <el-rate v-model="item.score" :max="3" disabled/> -->
               <img v-if="item.questionDifficulty === 'easy'" :src="easyIcon" alt="">
               <img v-if="item.questionDifficulty === 'normal'" :src="normalIcon" alt="">
               <img v-if="item.questionDifficulty === 'difficult'" :src="difficultIcon" alt="">
@@ -50,7 +44,7 @@ onMounted(()=>getAcceptQuestion())
   position: relative;
   margin-left: 33px;
   width: 463px;
-  height: 659px; //自适应
+  height: 659px; 
   border-radius: 4px;
   background-color: #FFFFFF;
   .title{

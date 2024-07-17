@@ -7,9 +7,9 @@ import { getCaptchaAPI } from '@/apis/user';
 
 const form = ref({
   userEmail: '',
-  captcha:'', //用户输入的图形验证码
-  checkKey:'', //将来请求传递的图形验证码唯一标识
-  captchaUrl:'' //地址
+  captcha:'',
+  checkKey:'',
+  captchaUrl:''
 })
 
 const getCaptcha = async()=>{
@@ -19,7 +19,6 @@ const getCaptcha = async()=>{
 }
 onMounted(()=>getCaptcha())
 
-// 规则数据对象
 const rules = {
   userEmail: [
     { required: true, message: '账号不能为空',trigger:'blur' }
@@ -34,11 +33,8 @@ const formRef = ref(null);
 
 const doLogin = () => {
   const { userEmail, userPassword, captcha, checkKey } = form.value
-  // 调用实例方法
   formRef.value.validate(async (valid) => {
-   // valid: 所有表单都通过校验  才为true
    console.log(valid)
-   // 以valid做为判断条件 如果通过校验才执行登录逻辑
    if (valid) {
      await userStore.getUserInfo({ userEmail, userPassword, captcha, checkKey })
    }

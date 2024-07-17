@@ -30,14 +30,10 @@ const codeVal = ref('');
 const lang = java();
 const extensions = [oneDark];
 
-// const sendAiLanguage = ref('java')
 const language = ref('java')
 const selectedLanguage = ref('')
 const selectLanguage = (command) => {
   language.value = command.toString()
-  // if (command.toString() === 'java 17') {
-    // sendAiLanguage.value = java
-  // }
 }
 
 const returnPage = ()=>{
@@ -63,11 +59,9 @@ const runCode = async() => {
   let timeout = 0
   const intervalid = setInterval(async()=>{
     const response = await getQuestionResultAPI(res)
-    // const response = await getQuestionResultAPI(183)
     result.value = response
     turn(result.value)
     
-    // onsubmit()
     // 成功
     if(result.value.questionStatus === 2) {
       // 显示弹框和遮罩
@@ -216,10 +210,6 @@ onMounted(()=>getQuestion())
     style="background-color: #ebf0f6"
   >
     <template #header="{ close }">
-      <!-- <h4 :id="titleId" :class="titleClass">讯飞大模型辅助纠错</h4> -->
-      <!-- <el-button style="width: 25px; height: 25px" @click="close"> -->
-        <!-- <img style="width: 100%; height: 100%" src="../../assets/icons/icon-arrow-left.png" alt=""> -->
-      <!-- </el-button> -->
       <img 
         src="../../assets/icons/icon-arrow-left.png" 
         style="position:absolute; left: 24px; top: 20px; width: 25px; height: 25px"
@@ -585,10 +575,7 @@ ul,li,span,h4{
   background-color: #414447;
 }
 .isWaiting {
-  // width: 50px;
   margin-left: 150px;
-  // padding: 9px 30px;
-  // background: pink;
   margin-top: 30px;
   color: #7D7F81;
 }
@@ -626,7 +613,6 @@ ul,li,span,h4{
   margin-left: 55px;
 }
 .aiAvatar {
-  // margin-left: 350px;
   margin-top: 30px
 }
 </style>

@@ -170,17 +170,13 @@ onMounted(() => getQuestion())
 ::v-deep .el-textarea__inner {
     resize: none;
     width: 845px;
-    // height: 700px;
 }
 .add-background {
-    // background-size: cover;
-//   background-attachment: fixed;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
   top: 116px;
   width: 1108px;
-//   height: 83%;
   height: 950px;
   border-radius: 4px;
   background-color: #fff;
@@ -211,7 +207,6 @@ h2 {
   top: 80px;
   width: 950px;
   height: 800px;
-//   background: skyblue;
 }
 .question .el-input {
   --el-input-width: 170px !important;

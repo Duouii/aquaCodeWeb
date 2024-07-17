@@ -59,9 +59,6 @@ const beforeCoverUpload = async (file) => {
   return false; 
 };
 
-// const lesson = ref({})
-
-
 const form = ref({
   courseName: '',
   courseCover: '',
@@ -188,7 +185,6 @@ const returnPage = ()=>{
   transform: translateX(-50%);
   top: 116px;
   width: 1108px;
-//   height: 83%;
   height: 950px;
   border-radius: 4px;
   background-color: #fff;
@@ -219,7 +215,6 @@ h2 {
   top: 80px;
   width: 650px;
   height: 800px;
-//   background: skyblue;
 }
 .question .el-input {
   --el-input-width: 170px !important;

@@ -1,5 +1,4 @@
 <script setup>
-// import { getUserInfoAPI } from '@/apis/user';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/userStore';

@@ -12,7 +12,6 @@ import LayoutNav from '@/Layout/component/LayoutNav.vue'
   position: relative;
   display: flex;
   width: 100%;
-  // height: 3000px;
   min-height: 800px;
 }
 </style>

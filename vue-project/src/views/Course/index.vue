@@ -3,7 +3,6 @@ import { ref,onMounted } from 'vue'
 import difficultIcon from '@/assets/icons/icon-difficult.png'
 import normalIcon from '@/assets/icons/icon-normal.png'
 import easyIcon from '@/assets/icons/icon-easy.png'
-// import { toScore } from '@/components/score.js'
 import {getCourseCardContainAPI,getCourseCardAPI} from '@/apis/lesson.js';
 import {useRoute} from 'vue-router'
 const route = useRoute()
@@ -45,7 +44,6 @@ async function getCourseCardContain(courseCardValue) {
         }
       }
       else if(item.cardType === 'practice'){
-        // const score = toScore(item.difficulty)
         cardListPractice.push(item);
       }
     });
@@ -80,7 +78,6 @@ onMounted(async () => {
       <div class="contain study-contain" v-if="activeTab === 'study'">
         <ul>
           <li class="li">
-            <!-- <h3>Day1</h3> -->
             <ul class="dayContain">
               <li v-for="item in cardListLesson"  :key="item.cardId">
                 <RouterLink :to="`/course/${courseCardContain.courseId}/page/${item.total}/${item.cardId}`">
@@ -100,7 +97,6 @@ onMounted(async () => {
       <div class="contain exercise-contain" v-if="activeTab === 'exercise'">
         <ul>
           <li class="li">
-            <!-- <h3>Day1</h3> -->
             <ul class="dayContain">
               <li v-for="item in cardListPractice" :key="item.questionId">
                 <RouterLink v-if="item.cardType === 'practice'" :to="`/dayCardExercise/${item.questionId}`">
@@ -203,10 +199,6 @@ h4{
   height: 500px;
 }
 .study-contain{
-  // h3{
-  //   font-size: 24px;
-  //   color: $blueXColor;
-  // }
   .dayContain{
     width: 873px;
     margin-top: 2px;
@@ -262,10 +254,6 @@ h4{
   margin-bottom: 36px;
 }
 .exercise-contain{
-  // h3{
-  //   font-size: 24px;
-  //   color: #20BE8F;
-  // }
   .dayContain{
     width: 930px;
     margin-top: 20px;

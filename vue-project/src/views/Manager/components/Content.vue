@@ -262,9 +262,6 @@ onMounted(() => postQuestion())
       position: absolute;
       left: 248px;
       top: 14px;
-      // float: left;
-      // margin-left: 39px;
-      // margin-top: 14px;
       width: 64.5px;
       height: 19.5;
     }

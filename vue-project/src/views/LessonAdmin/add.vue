@@ -181,7 +181,6 @@ const returnPage = ()=>{
   transform: translateX(-50%);
   top: 116px;
   width: 1108px;
-//   height: 83%;
   height: 950px;
   border-radius: 4px;
   background-color: #fff;

@@ -16,31 +16,17 @@ const route = useRoute();
 const returnPage = () => {
   router.go(-1);
 };
-//差一个结束的标志
 const index = ref(1);
 
 // 代码编辑器
 let codeVal = ref('');
 
-
 //获取课程
 const coursePage = ref({});
 const getCoursePage = async () => {
-  // getCardHistory()
-  // console.log(index.value);
-  // const response = await getCardHistoryAPI(route.params.cardId)
-  // console.log(response);
-  // index.value = response.pageNo
   const res = await getCoursePageContainAPI(route.params.cardId, index.value)
   coursePage.value = res;
 };
-
-// 获取用户历史记录
-// const getCardHistory = async() => {
-//   const res = await getCardHistoryAPI(route.params.cardId)
-//   console.log(res.pageNo);
-//   index.value = res.pageNo
-// }
 
 // 记录时间戳
 let timeStamp = ref()
@@ -86,9 +72,6 @@ const nextPage = async () => {
     timeStamp = parseInt(new Date().getTime()/1000);
     await putCardStudyTimeAPI(timeStamp)
 
-    // const responses = await getCardHistoryAPI(route.params.cardId)
-    // console.log(responses);
-    // index.value = responses.pageNo
     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
     coursePage.value = res;
 
@@ -108,37 +91,7 @@ const nextPage = async () => {
     courseHistory.value = response
   }
 };
-// const lastPage = async () => {
-//   if(index.value == 1) {
-//     alert('当前已是第一页')
-//     return
-//   }
-//   if(index.value > 1) {
-//     index.value = index.value - 1;
-//     widthT.value-=percent
-//     widthB.value+=percent
-//     // const responses = await getCardHistoryAPI(route.params.cardId)
-//     // console.log(responses);
-//     // index.value = responses.pageNo
-//     const res = await getCoursePageContainAPI(route.params.cardId, index.value);
-//     coursePage.value = res;
 
-//     // 选择题
-//     if (coursePage.value.pageType == 4) {
-//        if(JSON.parse(coursePage.value.pageContent).answer) {
-//         correctAnswer = JSON.parse(coursePage.value.pageContent).answer
-//       }
-//     }
-//     // 代码运行题
-//     if(coursePage.value.pageType == 3) {
-//       codeVal = JSON.parse(coursePage.value.pageContent).code
-//       correctCodeAnswer = JSON.parse(coursePage.value.pageContent).output
-//     }
-   
-//     const response = await getCourseHistoryAPI(userInfo.userId,route.params.courseId,route.params.cardId,index.value);
-//     courseHistory.value = response
-//   }
-// };
 // 检查答案是否正确
 const option = async(item) => {
   if(item === correctAnswer) {
@@ -246,7 +199,6 @@ onMounted(async() => {
       </ul>
 
       <div class="continute">
-        <!-- <el-button plain size="large" @click="lastPage">上一页</el-button> -->
         <el-button plain size="large" @click="nextPage" v-if="continuteNext">继续</el-button>
         <el-button plain size="large" @click="returnPage" v-if="returnCenter">返回课程中心</el-button>
       </div>
@@ -368,7 +320,6 @@ onMounted(async() => {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    // background-color: #fff;
     top: 301px;
     .answer {
       margin-bottom: 16px;

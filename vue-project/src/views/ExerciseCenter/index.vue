@@ -43,9 +43,7 @@ const checkDifficult = async (difficult) => {
 }
 
 let questionList = ref([])
-// const questionIndex =  ref(1) // 用于保存题目序号的变量
 const userStatus = ref('')
-// const score = ref()
 const postQuestionList = async() => {
   const res = await postQuestionListAPI(1, 50, " ", null)
   questionList.value = res.records
@@ -59,7 +57,6 @@ const userSearch = ref('')
 const userSearching = async() => {
   console.log(userSearch.value);
   const res = await postQuestionListAPI(1, 50, " ", null);
-  // questionList.value = res.records
   questionList.value = res.records.filter(item => item.questionTitle === userSearch.value);
 }
 
@@ -424,11 +421,7 @@ onMounted(() => postQuestionList())
   }
 }
 .isWaiting {
-  // width: 50px;
   margin-left: 150px;
-  // padding: 9px 30px;
-  // background: pink;
-  // margin-top: 30px;
   color: #7D7F81;
 }
 .avatar {

@@ -5,13 +5,13 @@ import { useRouter } from 'vue-router';
 const router = useRouter()
 import { useUserStore } from '@/stores/userStore'
 const userStore = useUserStore()
-//用户输入
+
 const form = ref({
-  userEmail: '1994295994@qq.com',
-  userPassword: 'czxczxczx',
-  captcha:'', //用户输入的图形验证码
-  checkKey:'', //将来请求传递的图形验证码唯一标识
-  captchaUrl:'' //地址
+  userEmail: '',
+  userPassword: '',
+  captcha:'',
+  checkKey:'', 
+  captchaUrl:'' 
 })
 // 规则数据对象
 const rules = {

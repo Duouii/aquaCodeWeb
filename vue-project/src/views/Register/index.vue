@@ -8,9 +8,9 @@ const form = ref({
   userName:'',
   userEmail: '',
   userPassword: '',
-  captcha:'', //用户输入的图形验证码
-  checkKey:'', //将来请求传递的图形验证码唯一标识
-  captchaUrl:'' //地址
+  captcha:'',
+  checkKey:'',
+  captchaUrl:'' 
 })
 
 const getCaptcha = async()=>{
@@ -21,7 +21,6 @@ const getCaptcha = async()=>{
 
 onMounted(()=>getCaptcha())
 
-// 规则数据对象
 const rules = {
   userName: [
     { required: true, message: '用户名不能为空',trigger: 'blur' },

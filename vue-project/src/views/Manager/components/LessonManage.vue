@@ -126,36 +126,9 @@ onMounted(()=>getCourseCard())
   font-size: 30px;
   color: #fff;
 }
-// .search{
-//   float: right;
-//   width: 612px;
-//   height: 40px;
-//   border-radius: 4px;
-//   margin-right: 29px;
-//   margin-top: 24px;
-//   background-color: #F4F5F5;
-//   .icon-search{
-//     width: 24px;
-//     height: 24px;
-//     background: url(../../../assets/icons/icon-search.png) no-repeat;
-//     background-size: 24px 24px;
-//     margin-left: 10px;
-//     margin-top: 8px;
-//   }
-//   input{
-//     font-size: 14px;
-//     color: #7D7F81;
-//     margin-left: 10px;
-//     width: 560px;
-//     height: 40px;
-//     background-color: transparent;
-//   }
-// }
 .contain {
   width: 100%;
-  // height: 400px;
   padding-left: 49px;
-  // background-color: skyblue;
   display: flex;
   flex-wrap: wrap;
   li {

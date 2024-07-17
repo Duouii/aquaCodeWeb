@@ -2,7 +2,7 @@
 
 </script>
 <template>
-  好
+  用户管理
 </template>
 <style lang="scss" scoped>
 

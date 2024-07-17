@@ -11,12 +11,10 @@ import 'element-plus/theme-chalk/el-message.css'
 
 export const useUserStore = defineStore('user', () => {
     const router = useRouter()
-    //1.定义管理用户数据的state
     const userInfo = ref({})
     const state = {
-      token: getToken(), // 从缓存中读取初始值
+      token: getToken(),
     }
-    //2.定义获取接口数据的action函数
     const login = async (data) => {
       const res = await loginAPI(data)
       if(res) {
@@ -59,7 +57,6 @@ export const useUserStore = defineStore('user', () => {
         removeToken()
         userInfo.value = {}
     }
-    //3.以对象的格式把state和action return
     return {
         userInfo,
         login,

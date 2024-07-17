@@ -2,7 +2,7 @@
 
 </script>
 <template>
-  好的
+  提交记录
 </template>
 <style lang="scss" scoped>
 
